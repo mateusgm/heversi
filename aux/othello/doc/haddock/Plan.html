@@ -1,0 +1,1079 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--Rendered using the Haskell Html Library v0.2-->
+<HTML
+><HEAD
+><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"
+><TITLE
+>Plan</TITLE
+><LINK HREF="haddock.css" REL="stylesheet" TYPE="text/css"
+><SCRIPT SRC="haddock-util.js" TYPE="text/javascript"
+></SCRIPT
+></HEAD
+><BODY
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="topbar"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD
+><IMG SRC="haskell_icon.gif" WIDTH="16" HEIGHT="16" ALT=" "
+></TD
+><TD CLASS="title"
+></TD
+><TD CLASS="topbut"
+><A HREF="index.html"
+>Contents</A
+></TD
+><TD CLASS="topbut"
+><A HREF="doc-index.html"
+>Index</A
+></TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="modulebar"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD
+><FONT SIZE="6"
+>Plan</FONT
+></TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="section1"
+>Description</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Planning of the next move, using variations of the minimax algorithm.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="section1"
+>Synopsis</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="decl"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="decl"
+><SPAN CLASS="keyword"
+>data</SPAN
+>  <A HREF="#t%3AGameTree"
+>GameTree</A
+> a </TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="decl"
+>= <A HREF="#v%3ALeaf"
+>Leaf</A
+> {<TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="recfield"
+><A HREF="#v%3AtAnnot"
+>tAnnot</A
+> :: a</TD
+></TR
+><TR
+><TD CLASS="recfield"
+><A HREF="#v%3AtStone"
+>tStone</A
+> :: <A HREF="Board.html#t%3AStone"
+>Stone</A
+></TD
+></TR
+><TR
+><TD CLASS="recfield"
+><A HREF="#v%3AtBoard"
+>tBoard</A
+> :: <A HREF="Board.html#t%3ABoard"
+>Board</A
+></TD
+></TR
+></TABLE
+>}</TD
+></TR
+><TR
+><TD CLASS="decl"
+>| <A HREF="#v%3ANode"
+>Node</A
+> {<TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="recfield"
+><A HREF="#v%3AtAnnot"
+>tAnnot</A
+> :: a</TD
+></TR
+><TR
+><TD CLASS="recfield"
+><A HREF="#v%3AtStone"
+>tStone</A
+> :: <A HREF="Board.html#t%3AStone"
+>Stone</A
+></TD
+></TR
+><TR
+><TD CLASS="recfield"
+><A HREF="#v%3AtBoard"
+>tBoard</A
+> :: <A HREF="Board.html#t%3ABoard"
+>Board</A
+></TD
+></TR
+><TR
+><TD CLASS="recfield"
+><A HREF="#v%3AtChoices"
+>tChoices</A
+> :: [<A HREF="Plan.html#t%3AChoice"
+>Choice</A
+> a]</TD
+></TR
+></TABLE
+>}</TD
+></TR
+></TABLE
+></TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="decl"
+><SPAN CLASS="keyword"
+>data</SPAN
+>  <A HREF="#t%3AChoice"
+>Choice</A
+> a </TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="decl"
+>= <A HREF="#v%3AChoiceMove"
+>ChoiceMove</A
+> {<TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="recfield"
+><A HREF="#v%3AcCoord"
+>cCoord</A
+> :: <A HREF="Board.html#t%3ACoord"
+>Coord</A
+></TD
+></TR
+><TR
+><TD CLASS="recfield"
+><A HREF="#v%3AcTree"
+>cTree</A
+> :: <A HREF="Plan.html#t%3AGameTree"
+>GameTree</A
+> a</TD
+></TR
+></TABLE
+>}</TD
+></TR
+><TR
+><TD CLASS="decl"
+>| <A HREF="#v%3AChoicePass"
+>ChoicePass</A
+> {<TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="recfield"
+><A HREF="#v%3AcTree"
+>cTree</A
+> :: <A HREF="Plan.html#t%3AGameTree"
+>GameTree</A
+> a</TD
+></TR
+></TABLE
+>}</TD
+></TR
+></TABLE
+></TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AannotOfChoice"
+>annotOfChoice</A
+> ::  <A HREF="Plan.html#t%3AChoice"
+>Choice</A
+> a -&gt; a</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AdepthOfTree"
+>depthOfTree</A
+> ::  <A HREF="Plan.html#t%3AGameTree"
+>GameTree</A
+> a -&gt; Int</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AsizeOfTree"
+>sizeOfTree</A
+> ::  <A HREF="Plan.html#t%3AGameTree"
+>GameTree</A
+> a -&gt; Int</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AchooseBest"
+>chooseBest</A
+> :: [<A HREF="Plan.html#t%3AChoice"
+>Choice</A
+> Int] -&gt; [<A HREF="Plan.html#t%3AChoice"
+>Choice</A
+> Int]</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AchooseWorst"
+>chooseWorst</A
+> :: [<A HREF="Plan.html#t%3AChoice"
+>Choice</A
+> Int] -&gt; [<A HREF="Plan.html#t%3AChoice"
+>Choice</A
+> Int]</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AbuildGameTree"
+>buildGameTree</A
+> :: Int -&gt; <A HREF="Board.html#t%3AStone"
+>Stone</A
+> -&gt; <A HREF="Board.html#t%3ABoard"
+>Board</A
+> -&gt; <A HREF="Plan.html#t%3AGameTree"
+>GameTree</A
+> ()</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AannotateTree"
+>annotateTree</A
+> :: <A HREF="Board.html#t%3AStone"
+>Stone</A
+> -&gt; <A HREF="Plan.html#t%3AGameTree"
+>GameTree</A
+> () -&gt; <A HREF="Plan.html#t%3AGameTree"
+>GameTree</A
+> Int</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AannotateChoice"
+>annotateChoice</A
+> :: <A HREF="Board.html#t%3AStone"
+>Stone</A
+> -&gt; <A HREF="Plan.html#t%3AChoice"
+>Choice</A
+> () -&gt; <A HREF="Plan.html#t%3AChoice"
+>Choice</A
+> Int</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3ApruneTree"
+>pruneTree</A
+> :: <A HREF="Board.html#t%3AStone"
+>Stone</A
+> -&gt; <A HREF="Plan.html#t%3AGameTree"
+>GameTree</A
+> Int -&gt; <A HREF="Plan.html#t%3AGameTree"
+>GameTree</A
+> Int</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3ApruneChoice"
+>pruneChoice</A
+> :: <A HREF="Board.html#t%3AStone"
+>Stone</A
+> -&gt; <A HREF="Plan.html#t%3AChoice"
+>Choice</A
+> Int -&gt; <A HREF="Plan.html#t%3AChoice"
+>Choice</A
+> Int</TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3ApruneNode"
+>pruneNode</A
+> :: <A HREF="Board.html#t%3AStone"
+>Stone</A
+> -&gt; <A HREF="Plan.html#t%3AGameTree"
+>GameTree</A
+> Int -&gt; <A HREF="Plan.html#t%3AGameTree"
+>GameTree</A
+> Int</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="section1"
+>Documentation</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><SPAN CLASS="keyword"
+>data</SPAN
+>  <A NAME="t%3AGameTree"
+></A
+><B
+>GameTree</B
+> a </TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="ndoc"
+>The game tree records the possible game states starting from a particular board.
+</TD
+></TR
+><TR
+><TD CLASS="section4"
+>Constructors</TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="5" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+><A NAME="v%3ALeaf"
+></A
+><B
+>Leaf</B
+></TD
+><TD CLASS="rdoc"
+>the board.	
+</TD
+></TR
+><TR
+><TD CLASS="body" COLSPAN="2"
+><TABLE CLASS="vanilla" CELLSPACING="1" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+><A NAME="v%3AtAnnot"
+></A
+><B
+>tAnnot</B
+> :: a</TD
+><TD CLASS="rdoc"
+>annotation on this leaf.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+><A NAME="v%3AtStone"
+></A
+><B
+>tStone</B
+> :: <A HREF="Board.html#t%3AStone"
+>Stone</A
+></TD
+><TD CLASS="rdoc"
+>stone of player who's turn it is for the contained board.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+><A NAME="v%3AtBoard"
+></A
+><B
+>tBoard</B
+> :: <A HREF="Board.html#t%3ABoard"
+>Board</A
+></TD
+><TD CLASS="rdoc"
+></TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="arg"
+><A NAME="v%3ANode"
+></A
+><B
+>Node</B
+></TD
+><TD CLASS="rdoc"
+>possible choices the player could make from this board.
+	Either a list of ChoiceMove's or a single ChoicePass.
+</TD
+></TR
+><TR
+><TD CLASS="body" COLSPAN="2"
+><TABLE CLASS="vanilla" CELLSPACING="1" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+><A NAME="v%3AtAnnot"
+></A
+><B
+>tAnnot</B
+> :: a</TD
+><TD CLASS="rdoc"
+>annotation on this node.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+><A NAME="v%3AtStone"
+></A
+><B
+>tStone</B
+> :: <A HREF="Board.html#t%3AStone"
+>Stone</A
+></TD
+><TD CLASS="rdoc"
+>stone of the player who's turn it is for the contained board.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+><A NAME="v%3AtBoard"
+></A
+><B
+>tBoard</B
+> :: <A HREF="Board.html#t%3ABoard"
+>Board</A
+></TD
+><TD CLASS="rdoc"
+>the board.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+><A NAME="v%3AtChoices"
+></A
+><B
+>tChoices</B
+> :: [<A HREF="Plan.html#t%3AChoice"
+>Choice</A
+> a]</TD
+><TD CLASS="rdoc"
+></TD
+></TR
+></TABLE
+></TD
+></TR
+></TABLE
+></TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><SPAN CLASS="keyword"
+>data</SPAN
+>  <A NAME="t%3AChoice"
+></A
+><B
+>Choice</B
+> a </TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="ndoc"
+>Represents a choice the player could make.
+</TD
+></TR
+><TR
+><TD CLASS="section4"
+>Constructors</TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="5" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+><A NAME="v%3AChoiceMove"
+></A
+><B
+>ChoiceMove</B
+></TD
+><TD CLASS="rdoc"
+>next node in the tree.
+</TD
+></TR
+><TR
+><TD CLASS="body" COLSPAN="2"
+><TABLE CLASS="vanilla" CELLSPACING="1" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+><A NAME="v%3AcCoord"
+></A
+><B
+>cCoord</B
+> :: <A HREF="Board.html#t%3ACoord"
+>Coord</A
+></TD
+><TD CLASS="rdoc"
+>coordinate of the new stone.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+><A NAME="v%3AcTree"
+></A
+><B
+>cTree</B
+> :: <A HREF="Plan.html#t%3AGameTree"
+>GameTree</A
+> a</TD
+><TD CLASS="rdoc"
+></TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="arg"
+><A NAME="v%3AChoicePass"
+></A
+><B
+>ChoicePass</B
+></TD
+><TD CLASS="rdoc"
+>the next node in the tree.
+</TD
+></TR
+><TR
+><TD CLASS="body" COLSPAN="2"
+><TABLE CLASS="vanilla" CELLSPACING="1" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+><A NAME="v%3AcTree"
+></A
+><B
+>cTree</B
+> :: <A HREF="Plan.html#t%3AGameTree"
+>GameTree</A
+> a</TD
+><TD CLASS="rdoc"
+></TD
+></TR
+></TABLE
+></TD
+></TR
+></TABLE
+></TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v%3AannotOfChoice"
+></A
+><B
+>annotOfChoice</B
+> ::  <A HREF="Plan.html#t%3AChoice"
+>Choice</A
+> a -&gt; a</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Get the annotation on the tree in this choice.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v%3AdepthOfTree"
+></A
+><B
+>depthOfTree</B
+> ::  <A HREF="Plan.html#t%3AGameTree"
+>GameTree</A
+> a -&gt; Int</TD
+></TR
+><TR
+><TD CLASS="doc"
+>The maximum depth of this tree.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v%3AsizeOfTree"
+></A
+><B
+>sizeOfTree</B
+> ::  <A HREF="Plan.html#t%3AGameTree"
+>GameTree</A
+> a -&gt; Int</TD
+></TR
+><TR
+><TD CLASS="doc"
+>The number of nodes and leaves in this tree.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v%3AchooseBest"
+></A
+><B
+>chooseBest</B
+> :: [<A HREF="Plan.html#t%3AChoice"
+>Choice</A
+> Int] -&gt; [<A HREF="Plan.html#t%3AChoice"
+>Choice</A
+> Int]</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Select the choices with the highest annotation from this list.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v%3AchooseWorst"
+></A
+><B
+>chooseWorst</B
+> :: [<A HREF="Plan.html#t%3AChoice"
+>Choice</A
+> Int] -&gt; [<A HREF="Plan.html#t%3AChoice"
+>Choice</A
+> Int]</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Select the choices with the lowest annotation from this list.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v%3AbuildGameTree"
+></A
+><B
+>buildGameTree</B
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+>:: Int</TD
+><TD CLASS="rdoc"
+>depth of tree.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Board.html#t%3AStone"
+>Stone</A
+></TD
+><TD CLASS="rdoc"
+>stone of the current player.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Board.html#t%3ABoard"
+>Board</A
+></TD
+><TD CLASS="rdoc"
+>the starting board.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Plan.html#t%3AGameTree"
+>GameTree</A
+> ()</TD
+><TD CLASS="rdoc"
+></TD
+></TR
+><TR
+><TD CLASS="ndoc" COLSPAN="2"
+>Build a game tree to a certain depth, 
+	setting the annotation to the unit value ().
+</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v%3AannotateTree"
+></A
+><B
+>annotateTree</B
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+>:: <A HREF="Board.html#t%3AStone"
+>Stone</A
+></TD
+><TD CLASS="rdoc"
+>stone of the controlling player.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Plan.html#t%3AGameTree"
+>GameTree</A
+> ()</TD
+><TD CLASS="rdoc"
+>unannotated choice
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Plan.html#t%3AGameTree"
+>GameTree</A
+> Int</TD
+><TD CLASS="rdoc"
+>annotated choice
+</TD
+></TR
+><TR
+><TD CLASS="ndoc" COLSPAN="2"
+>Annotate the game tree with the minimum possible score for each branch.
+</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v%3AannotateChoice"
+></A
+><B
+>annotateChoice</B
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+>:: <A HREF="Board.html#t%3AStone"
+>Stone</A
+></TD
+><TD CLASS="rdoc"
+>stone of the controlling player.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Plan.html#t%3AChoice"
+>Choice</A
+> ()</TD
+><TD CLASS="rdoc"
+>unannotaed choice
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Plan.html#t%3AChoice"
+>Choice</A
+> Int</TD
+><TD CLASS="rdoc"
+>annotated choice
+</TD
+></TR
+><TR
+><TD CLASS="ndoc" COLSPAN="2"
+>Annotate the game tree contained within this choice
+</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v%3ApruneTree"
+></A
+><B
+>pruneTree</B
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+>:: <A HREF="Board.html#t%3AStone"
+>Stone</A
+></TD
+><TD CLASS="rdoc"
+>stone of the controlling player
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Plan.html#t%3AGameTree"
+>GameTree</A
+> Int</TD
+><TD CLASS="rdoc"
+>unpruned tree
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Plan.html#t%3AGameTree"
+>GameTree</A
+> Int</TD
+><TD CLASS="rdoc"
+>pruned tree
+</TD
+></TR
+><TR
+><TD CLASS="ndoc" COLSPAN="2"
+>For nodes that this player has control over, prune the choices that
+	don't maximise the minimum possible score.
+</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v%3ApruneChoice"
+></A
+><B
+>pruneChoice</B
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+>:: <A HREF="Board.html#t%3AStone"
+>Stone</A
+></TD
+><TD CLASS="rdoc"
+>stone of controlling player
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Plan.html#t%3AChoice"
+>Choice</A
+> Int</TD
+><TD CLASS="rdoc"
+>choice containing unpruned tree
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Plan.html#t%3AChoice"
+>Choice</A
+> Int</TD
+><TD CLASS="rdoc"
+>choice containing pruned tree
+</TD
+></TR
+><TR
+><TD CLASS="ndoc" COLSPAN="2"
+>Prune the tree contained within this choice.
+</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v%3ApruneNode"
+></A
+><B
+>pruneNode</B
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+>:: <A HREF="Board.html#t%3AStone"
+>Stone</A
+></TD
+><TD CLASS="rdoc"
+>stone of controlling player
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Plan.html#t%3AGameTree"
+>GameTree</A
+> Int</TD
+><TD CLASS="rdoc"
+>unpruned tree
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Plan.html#t%3AGameTree"
+>GameTree</A
+> Int</TD
+><TD CLASS="rdoc"
+>pruned tree
+</TD
+></TR
+><TR
+><TD CLASS="ndoc" COLSPAN="2"
+>Prune the choices in this node.
+</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="botbar"
+>Produced by <A HREF="http://www.haskell.org/haddock/"
+>Haddock</A
+> version 2.3.0</TD
+></TR
+></TABLE
+></BODY
+></HTML
+>

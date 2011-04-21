@@ -1,0 +1,384 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--Rendered using the Haskell Html Library v0.2-->
+<HTML
+><HEAD
+><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"
+><TITLE
+>Play</TITLE
+><LINK HREF="haddock.css" REL="stylesheet" TYPE="text/css"
+><SCRIPT SRC="haddock-util.js" TYPE="text/javascript"
+></SCRIPT
+></HEAD
+><BODY
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="topbar"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD
+><IMG SRC="haskell_icon.gif" WIDTH="16" HEIGHT="16" ALT=" "
+></TD
+><TD CLASS="title"
+></TD
+><TD CLASS="topbut"
+><A HREF="index.html"
+>Contents</A
+></TD
+><TD CLASS="topbut"
+><A HREF="doc-index.html"
+>Index</A
+></TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="modulebar"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD
+><FONT SIZE="6"
+>Play</FONT
+></TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="section1"
+>Description</TD
+></TR
+><TR
+><TD CLASS="doc"
+>Handles updating of the game state to implement the computer's moves.
+</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="section1"
+>Synopsis</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AplayComputerMove"
+>playComputerMove</A
+> :: <A HREF="Board.html#t%3AStone"
+>Stone</A
+> -&gt; <A HREF="State.html#t%3APlayer"
+>Player</A
+> -&gt; <A HREF="State.html#t%3AState"
+>State</A
+> -&gt; IO <A HREF="State.html#t%3AState"
+>State</A
+></TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AplayMoveGreedy"
+>playMoveGreedy</A
+> :: <A HREF="Board.html#t%3AStone"
+>Stone</A
+> -&gt; <A HREF="State.html#t%3AState"
+>State</A
+> -&gt; IO <A HREF="State.html#t%3AState"
+>State</A
+></TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AplayMoveMinimax"
+>playMoveMinimax</A
+> :: Int -&gt; <A HREF="Board.html#t%3AStone"
+>Stone</A
+> -&gt; <A HREF="State.html#t%3AState"
+>State</A
+> -&gt; IO <A HREF="State.html#t%3AState"
+>State</A
+></TD
+></TR
+><TR
+><TD CLASS="s8"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A HREF="#v%3AplayMovePruned"
+>playMovePruned</A
+> :: Int -&gt; <A HREF="Board.html#t%3AStone"
+>Stone</A
+> -&gt; <A HREF="State.html#t%3AState"
+>State</A
+> -&gt; IO <A HREF="State.html#t%3AState"
+>State</A
+></TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="section1"
+>Documentation</TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v%3AplayComputerMove"
+></A
+><B
+>playComputerMove</B
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+>:: <A HREF="Board.html#t%3AStone"
+>Stone</A
+></TD
+><TD CLASS="rdoc"
+>stone color of computer player.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="State.html#t%3APlayer"
+>Player</A
+></TD
+><TD CLASS="rdoc"
+>algorithm to use.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="State.html#t%3AState"
+>State</A
+></TD
+><TD CLASS="rdoc"
+>old state.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; IO <A HREF="State.html#t%3AState"
+>State</A
+></TD
+><TD CLASS="rdoc"
+>new state.
+</TD
+></TR
+><TR
+><TD CLASS="ndoc" COLSPAN="2"
+>Play a move with one of the computer algorithms.
+</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v%3AplayMoveGreedy"
+></A
+><B
+>playMoveGreedy</B
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+>:: <A HREF="Board.html#t%3AStone"
+>Stone</A
+></TD
+><TD CLASS="rdoc"
+>stone color of computer player.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="State.html#t%3AState"
+>State</A
+></TD
+><TD CLASS="rdoc"
+>old game state.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; IO <A HREF="State.html#t%3AState"
+>State</A
+></TD
+><TD CLASS="rdoc"
+>new game state.
+</TD
+></TR
+><TR
+><TD CLASS="ndoc" COLSPAN="2"
+>Play a move with the greedy algorithm.
+</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v%3AplayMoveMinimax"
+></A
+><B
+>playMoveMinimax</B
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+>:: Int</TD
+><TD CLASS="rdoc"
+>use this game tree depth.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Board.html#t%3AStone"
+>Stone</A
+></TD
+><TD CLASS="rdoc"
+>stone of computer player.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="State.html#t%3AState"
+>State</A
+></TD
+><TD CLASS="rdoc"
+>old game state.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; IO <A HREF="State.html#t%3AState"
+>State</A
+></TD
+><TD CLASS="rdoc"
+>new game state.
+</TD
+></TR
+><TR
+><TD CLASS="ndoc" COLSPAN="2"
+>Play a move with the minimax algorithm.
+</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="decl"
+><A NAME="v%3AplayMovePruned"
+></A
+><B
+>playMovePruned</B
+></TD
+></TR
+><TR
+><TD CLASS="body"
+><TABLE CLASS="vanilla" CELLSPACING="0" CELLPADDING="0"
+><TR
+><TD CLASS="arg"
+>:: Int</TD
+><TD CLASS="rdoc"
+>use this game tree depth.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="Board.html#t%3AStone"
+>Stone</A
+></TD
+><TD CLASS="rdoc"
+>stone of computer player.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; <A HREF="State.html#t%3AState"
+>State</A
+></TD
+><TD CLASS="rdoc"
+>old game state.
+</TD
+></TR
+><TR
+><TD CLASS="arg"
+>-&gt; IO <A HREF="State.html#t%3AState"
+>State</A
+></TD
+><TD CLASS="rdoc"
+>new game state.
+</TD
+></TR
+><TR
+><TD CLASS="ndoc" COLSPAN="2"
+>Play a move with the pruned minimax algorithm.
+</TD
+></TR
+></TABLE
+></TD
+></TR
+><TR
+><TD CLASS="s15"
+></TD
+></TR
+><TR
+><TD CLASS="botbar"
+>Produced by <A HREF="http://www.haskell.org/haddock/"
+>Haddock</A
+> version 2.3.0</TD
+></TR
+></TABLE
+></BODY
+></HTML
+>

@@ -1,0 +1,22 @@
+
+2010-10-20
+
+Version 1.7.2
+ - Increased the maximum version of base to < 5 .
+
+
+2009-11-14 
+
+Version 1.7.1
+ - Added -Wall flag in the CABAL file 
+ - Solved all compiler warnings.
+ - Increased the maximum version of wx and wxcore to < 0.13 .
+ - Added the file changelog.txt
+
+
+2009-10-29 
+
+Version 1.7
+ - Adapted to wxWidgets 2.8.9 / wxHaskell 0.11.1.2 
+ - Cabalized
+
