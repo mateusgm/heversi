@@ -6,7 +6,7 @@ import Controllers.Game  (game)
 --, chat, home)
 
 type Matcher = String
-type Controller = String -> String
+type Controller = [String] -> [(String, String)] -> String
 
 type Route = (Matcher, Method, Controller)
 
