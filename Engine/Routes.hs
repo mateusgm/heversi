@@ -1,6 +1,6 @@
 module Engine.Routes (routes) where
 
-import Engine.Types         (Routes(GETs, GETl, POSTs))
+import Engine.Types         (Route(GETs, GETl, POSTs))
 import Controllers.Game     as Game   
 
 

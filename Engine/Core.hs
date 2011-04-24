@@ -1,4 +1,4 @@
-module Engine.Core where
+module Engine.Core      (startApp) where
 
 import Engine.Types
 import Engine.Routes     
@@ -34,7 +34,7 @@ createHandler m z c = do matchMethod z m
                     . union (parsePairs p) . singleton "_url"
 
                        
--- ====================== auxiliary functions =====================
+-- ====================== auxiliary functions ===================
 
 matchMethod :: Matching -> Method -> ServerPart () 
 matchMethod Strict = methodM
