@@ -1,22 +1,26 @@
-module Config.Routes (routes, Route) where
+module Config.Routes (Route(GETs, GETl, POSTs),
+                      routes, Controller,
+                      Matching(Strict, Loose)) where
 
+import Data.Map                   (Map)
+import Controllers.Game as Game   (index, send, home)
 
-import Happstack.Server  (Method(GET, POST))
-import Controllers.Game  (game)
---, chat, home)
+-- ======================================================
 
-type Matcher = String
-type Controller = [String] -> [(String, String)] -> String
+data Matching   = Strict | Loose
+type Path       = String
+type Controller = Map String String -> String
 
-type Route = (Matcher, Method, Controller)
+-- the 's' refers to strict matching with subpath
+-- the 'p' refers to strict matching
+-- the 'l' refers to loose matching
+data Route      = GETs  Path Controller  | 
+                  GETl  Path Controller  | 
+                  POSTs Path Controller       
 
+-- ======================================================
 
-routes = [("game", GET, game),
-          ("", GET, game)]
---,
---          ("chat", chat),
---          ("home", home)];
-
-
-
+routes = [GETs "game"      Game.index,
+          GETl "game/send" Game.send ,
+          GETs ""          Game.home ]    
 
