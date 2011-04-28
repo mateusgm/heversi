@@ -4,6 +4,7 @@ module Engine.Types (Route(GETs, GETl, POSTs), Controller,
 import Data.Map     (Map)
 
 data Matching       = Strict | Loose
+                      deriving (Eq)
 type Path           = String
 type Controller     = Map String String -> String
 

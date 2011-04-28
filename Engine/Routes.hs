@@ -5,7 +5,7 @@ import Controllers.Game     as Game
 
 
 
-routes = [GETs "game"      Game.index,
+routes = [GETs ""          Game.home ,
           GETl "game/send" Game.send ,
-          GETs ""          Game.home ]    
+          GETs "all"       Game.index]    
 

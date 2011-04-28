@@ -3,7 +3,8 @@ module Engine.Core      (startApp) where
 import Engine.Types
 import Engine.Routes     
 
-import Data.Map         (fromList, Map, union, singleton)
+import Debug.Trace       (trace)
+import Data.Map         (fromList, Map, union, singleton, empty)
 import Data.Either      (rights)
 import Text.Regex       (splitRegex, mkRegex)
 import Control.Monad    (msum)
@@ -17,23 +18,26 @@ import Happstack.Server (nullConf, simpleHTTP, Response, ServerPart,
 
 startApp :: IO ()
 startApp = simpleHTTP nullConf handlers
-  where handlers = msum $ public ++ map routeHandler routes 
+  where handlers = msum $ (map routeHandler routes) ++ public 
         public = [serveDirectory DisableBrowsing [] "public"]
 
 routeHandler :: Route -> ServerPart Response
-routeHandler (GETs p c)  = dirs p $ createHandler GET Strict c
-routeHandler (GETl p c)  = dirs p $ createHandler GET Loose c
+routeHandler (GETs "" c) =          createHandler GET Strict c
+routeHandler (GETs  p c) = dirs p $ createHandler GET Strict c
+routeHandler (GETl  p c) = dirs p $ createHandler GET Loose c
 routeHandler (POSTs p c) = dirs p $ createHandler POST Strict c
 
 createHandler :: Method -> Matching -> Controller -> ServerPart Response
 createHandler m z c = do matchMethod z m
                          decodeRequest m
                          pr <- lookPairs
-                         path $ handler pr
-  where handler p = ok . toResponse . c
-                    . union (parsePairs p) . singleton "_url"
-
-                       
+                         if (z == Strict) then strictHandler pr
+                            else path $ looseHandler pr
+   where strictHandler = handler . parsePairs
+         looseHandler pr = handler . union (parsePairs pr) . singleton "_url"
+         handler = ok . toResponse . c
+                     
+                    
 -- ====================== auxiliary functions ===================
 
 matchMethod :: Matching -> Method -> ServerPart () 
@@ -50,4 +54,6 @@ parsePairs = fromList . map extractPair
   
 parsePath :: String -> [String]  
 parsePath   = init . splitRegex (mkRegex "/|[?](.*)") . tail  
+
+
 
