@@ -1,36 +1,12 @@
 module Models.Game.Player where
 
-
------ PlayerType
-
-data PlayerType = Human | IA
-                  
-human           = Human
-ia              = IA                  
-
-isHuman (Human) = True
-isHuman _       = False
-isIa            = not . isHuman
+import Models.Game.Board  (Stone)
 
 
 ----- Player
 
-data Player     = White PlayerType
-                  Black PlayerType
-                  None
-                  deriving (Eq)
+data Player = Human Stone | IA Stone
+                  
 
-instance Show Player where
-  show (White _) = "x"
-  show (Black _) = "o"
-  show (None)    = "-"
-   
-players t       = (White human, Black t)
 
-isOther                   :: Player -> Player -> Bool
-other (White _) (Black _) = True
-other (Black _) (White _) = False
-
-isNone (None) = True
-isNone _      = False
 
