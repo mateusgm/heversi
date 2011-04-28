@@ -1,5 +1,6 @@
 module Models.Game.Player where
 
+
 ----- PlayerType
 
 data PlayerType = Human | IA
@@ -9,8 +10,8 @@ ia              = IA
 
 isHuman (Human) = True
 isHuman _       = False
+isIa            = not . isHuman
 
-isIA            = not . isHuman
 
 ----- Player
 
@@ -30,6 +31,6 @@ isOther                   :: Player -> Player -> Bool
 other (White _) (Black _) = True
 other (Black _) (White _) = False
 
+isNone (None) = True
+isNone _      = False
 
-
-human
