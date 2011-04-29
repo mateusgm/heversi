@@ -66,18 +66,20 @@ getChanges (Board b) (p, s)
 --- Internal 
 
 getChangesM :: BoardMap -> Position -> Stone -> [Move]
-getChangesM b (x,y) s  = findChanges dx dy []
-  where dx             = [1, 1, 0, -1, -1, -1, 0, 1]
+getChangesM b (x,y) s
+  | null changes       = []
+  | otherwise          = ((x,y),s) : changes                
+  where changes        = findChanges dx dy
+        dx             = [1, 1, 0, -1, -1, -1, 0, 1]
         dy             = [0, 1, 1, 1, 0, -1, -1, -1] 
-        findChanges []     []     [] = []
-        findChanges []     []     cs = ((x,y),s) : cs
-        findChanges (i:is) (j:js) cs = findChanges is js $ (++) cs
-                                       $ findAxisChanges (x+i,y+j) (i,j) []
-        findAxisChanges (p,q) (dp,dq) result
+        findChanges []     _      = []
+        findChanges (i:is) (j:js) = findChanges is js  ++
+                                     lookChanges (x+i,y+j) (i,j) []
+        lookChanges (p,q) (dp,dq) result
           | isOut (p,q)      = []
           | isNone $ b!(p,q) = []
           | b!(p,q) == s     = result
-          | otherwise        = findAxisChanges (p+dp,q+dq) (dp,dq)
+          | otherwise        = lookChanges (p+dp,q+dq) (dp,dq)
                                 (((p,q),s):result)
 
 
