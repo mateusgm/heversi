@@ -19,8 +19,11 @@ isOther Black White = True
 isOther _     _     = False
 
 isWhite :: Stone -> Bool
+isWhite White = True
+isWhite _     = False
 
 isBlack :: Stone -> Bool
+isBlack = not . isWhite
 
 ---------- Board   
 
@@ -36,8 +39,8 @@ isOut :: Position -> Bool
 isOut (x,y)   = x < 1 || x > 8 || y < 1 || y > 8
 
 isNil :: Board -> Bool
-isNil Nil = True
-isNil _   = False
+isNil Nil     = True
+isNil _       = False
 
 score :: Board -> Score
 score (Board b) = foldr countStone (0,0) $ elems b
@@ -49,8 +52,10 @@ score (Board b) = foldr countStone (0,0) $ elems b
 --- Internal
 
 _emptyBoard :: BoardMap
-_emptyBoard   = array r [((i,j),None) | (i,j) <- range r]
-  where r     = ((1,1),(8,8))
+_emptyBoard   = array r [((i,j),None) | (i,j) <- _boardRange]
+
+_boardRange :: [Position]
+_boardRange = range ((1,1),(8,8))
 
 _startingDisp :: [Move]
 _startingDisp    = [((4,4),s1), ((5,5),s1), ((4,5),s2), ((5,4),s2)]
@@ -60,7 +65,7 @@ _startingDisp    = [((4,4),s1), ((5,5),s1), ((4,5),s2), ((5,4),s2)]
 ---------- Moves
 
 type Move      = (Position, Stone)
-type Prospects = [Move]
+type Prospects = [Position]
 
 move :: Board -> Move -> Board
 move b@(Board bm) m
@@ -70,14 +75,15 @@ move b@(Board bm) m
 
 getChanges :: Board -> Move -> [Move]
 getChanges (Nil) _     = []
-getChanges (Board b) (p, s)
+getChanges (Board b) (p,s)
   | isOut p            = []
   | not $ isNone $ b!p = []
   | otherwise          = getChangesM b p s
 
-getMoves :: Board -> [Move]
-
 getProspects :: Board -> Stone -> Prospects
+getProspects Nil _ = []
+getProspects b   s = [ p | p <- _boardRange,
+                           not null $ getChanges b (p,s)]
 
 --- Internal 
 

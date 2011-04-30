@@ -5,18 +5,24 @@ import Models.Game.Board  (Stone)
 
 ----- Player
 
-data Player = Human Stone | IA Stone
+data Player = Human Stone | AI Stone
 
-                  
--- stone :: Player -> Stone
+stone :: Player -> Stone
+stone Human s = s
+stone AI s    = s
 
--- human :: Stone -> Player
+human :: Stone -> Player
+human = Human
 
--- ia :: Stone -> Player
+ai :: Stone -> Player
+ai = AI
 
+isHuman :: Player -> Bool
+isHuman Human _ = True
+isHuman _       = False
 
--- isHuman :: Player -> Bool
-
+isAI :: Player -> Bool
+isAI = not . isHuman
 
 
 
