@@ -5,29 +5,32 @@ import Models.Game.Player
 import Models.Game.IA
 
 type Turn    = Player
-type Winner  = Stone
+type Winner  = Player
 type Points  = Integer
 
-data Match   = Active   Board Turn   Idle         |
-               Finished Board Winner Loser Points
+data Match   = Active   Board Turn   Idle  |
+               Finished Board Winner Loser 
 
 
-start :: Player -> Player -> Match
-start p1 p2 = Active board p1 p2
+begin :: Player -> Player -> Match
+begin p1 p2 = Active board p1 p2
 
 play :: Match -> Move -> Match
-play m@(Finished _ _ _ _) _ = m
-play s@(Match b t i) m
+play s@(Finished _ _ _) _ = s
+play s@(Active b t i) m
   | isNil newBoard     = s
-  | null $ prospects i = if (null $ prospects t) then end s
-                          else newState i t    
+  | null $ prospects i = (null $ prospects t) ? (end s)
+                          : (newState i t)    
   | otherwise          = newState t i
   where newBoard       = move b m
-        prospects      = getProspects newBoard
+        prospects      = getProspects newBoard . stone
         newState tx ix
           | isHuman ix = state 
           | otherwise  = play state moveAI
-          where state  = Match newBoard ix tx
-                moveAI = getMove newBoard ix
+          where state  = Active newBoard ix tx
+                moveAI = getMove newBoard $ stone ix
 
 end :: State -> State
+end s@(Finished _ _ _) = s
+end (Active b t i)     = Finished b w l
+  where (w,l)          = isStone t (winner b) ? (t,i) : (i,t)
