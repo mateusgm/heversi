@@ -18,9 +18,13 @@ isOther White Black = True
 isOther Black White = True
 isOther _     _     = False
 
+isWhite :: Stone -> Bool
+
+isBlack :: Stone -> Bool
 
 ---------- Board   
-  
+
+type Score = (Integer, Integer)  
 type Position = (Integer, Integer)
 type BoardMap = DiffArray Position Stone
 data Board    = Board BoardMap | Nil
@@ -32,7 +36,16 @@ isOut :: Position -> Bool
 isOut (x,y)   = x < 1 || x > 8 || y < 1 || y > 8
 
 isNil :: Board -> Bool
+isNil Nil = True
+isNil _   = False
 
+score :: Board -> Score
+score (Board b) = foldr countStone (0,0) $ elems b
+  where countStone s (w,b)
+          | iswhite s = (w+1,b)
+          | isBlack s = (w,b+1)
+          | otherwise = (w,b)
+  
 --- Internal
 
 _emptyBoard :: BoardMap
