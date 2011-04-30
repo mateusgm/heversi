@@ -31,6 +31,8 @@ board         = Board $ _emptyBoard // _startingDisp
 isOut :: Position -> Bool
 isOut (x,y)   = x < 1 || x > 8 || y < 1 || y > 8
 
+isNil :: Board -> Bool
+
 --- Internal
 
 _emptyBoard :: BoardMap
@@ -44,7 +46,8 @@ _startingDisp    = [((4,4),s1), ((5,5),s1), ((4,5),s2), ((5,4),s2)]
 
 ---------- Moves
 
-type Move = (Position, Stone)
+type Move      = (Position, Stone)
+type Prospects = [Move]
 
 move :: Board -> Move -> Board
 move b@(Board bm) m
@@ -53,15 +56,15 @@ move b@(Board bm) m
   where changes = getChanges b m
 
 getChanges :: Board -> Move -> [Move]
-getChanges (Nil) _    = []
+getChanges (Nil) _     = []
 getChanges (Board b) (p, s)
   | isOut p            = []
   | not $ isNone $ b!p = []
   | otherwise          = getChangesM b p s
 
--- getMoves :: Board -> [Move]
+getMoves :: Board -> [Move]
 
--- getPossibilities :: Board -> Stone -> [Position]
+getProspects :: Board -> Stone -> Prospects
 
 --- Internal 
 
