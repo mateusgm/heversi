@@ -1,21 +1,21 @@
 module Models.Game where
 
 import Models.Game.Board
+import Models.Game.Engine
+import Models.Game.Player
 import Data.Array.Diff
 
---------- teste
+--------- teste engine
 
-s = Black
-b = board
-m1 = ((6,4), s)
-m2 = ((4,6), s)
-m3 = ((5,3), s)
-m4 = ((3,5), s)
+h1 = human Black
+h2 = human White
+ia = ai White
 
-x0 = ((6,6), s)
-x1 = ((6,3), s)
-x2 = ((6,5), s)
-x3 = ((6,7), s)
-x5 = ((5,4), s)
-x6 = ((5,7), s)
+m1 = begin h1 h2
+m2 = begin h1 ia
+
+x1 = ((6,4), Black)
+x2 = ((6,5), Black)
+
+
 

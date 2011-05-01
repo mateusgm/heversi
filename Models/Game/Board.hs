@@ -2,7 +2,7 @@ module Models.Game.Board
   where
 
 import Data.List
-import Data.Array.Diff      (DiffArray, array, (//), (!), elems, range)
+import Data.Array.Diff    (DiffArray, array, (//), (!), elems, range)
 import Debug.Trace
 
 
@@ -45,17 +45,20 @@ isNil _       = False
 score :: Board -> Score
 score (Board b) = foldr countStone (0,0) $ elems b
   where countStone s (w,b)
-          | iswhite s = (w+1,b)
+          | isWhite s = (w+1,b)
           | isBlack s = (w,b+1)
           | otherwise = (w,b)
   
 --- Internal
 
 _emptyBoard :: BoardMap
-_emptyBoard   = array r [((i,j),None) | (i,j) <- _boardRange]
+_emptyBoard   = array _range [((i,j),None) | (i,j) <- _boardRange]
+
+_range ::(Position, Position)
+_range = ((1,1),(8,8))
 
 _boardRange :: [Position]
-_boardRange = range ((1,1),(8,8))
+_boardRange = range _range
 
 _startingDisp :: [Move]
 _startingDisp    = [((4,4),s1), ((5,5),s1), ((4,5),s2), ((5,4),s2)]
@@ -83,7 +86,7 @@ getChanges (Board b) (p,s)
 getProspects :: Board -> Stone -> Prospects
 getProspects Nil _ = []
 getProspects b   s = [ p | p <- _boardRange,
-                           not null $ getChanges b (p,s)]
+                           not $ null $ getChanges b (p,s)]
 
 --- Internal 
 
