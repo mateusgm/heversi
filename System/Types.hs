@@ -13,4 +13,5 @@ type Controller     = Map String String -> String
 -- the 'l' refers to loose matching
 data Route          = GETs  Path Controller  | 
                       GETl  Path Controller  | 
-                      POSTs Path Controller  
+                      POSTs Path Controller  |
+                      POSTl Path Controller

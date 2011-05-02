@@ -1,13 +1,21 @@
-module Controllers.Game (index, send, home) where
+module Controllers.Game (index, begin, play, get, end)
+  where
 
 import Engine.Types     (Controller)
 import Data.Map
 
+
 index :: Controller
 index _ = "Hello index!"
 
-send  :: Controller
-send a = "Hello send! " ++ show a
+begin :: Controller
+begin m = "Hello begin!" 
 
-home  :: Controller
-home _ = "Hello home!"
+play :: Controller
+play m = "Hello play!" 
+
+get :: Controller
+get m   = "Hello get!"
+
+end :: Controller
+end m   = "Hello get!"
