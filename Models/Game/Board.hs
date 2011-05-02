@@ -1,102 +1,73 @@
-module Models.Game.Board    
+module Models.Game.Board  (Score, Position, Move, Prospects, Board(..),
+                           change, board, prospects, changes, score,
+                           isOut, isNil)
   where
 
 import Data.List
 import Data.Array.Diff    (DiffArray, array, (//), (!), elems, range)
-import Debug.Trace
+import Models.Game.Stone  (Stone, black, white, none,
+                           isNone, isWhite, isBlack)
 
 
----------- Stones
+-- some definitions
 
-data Stone   = Black | White | None
-               deriving (Eq)
-
-isNone None = True
-isNone _     = False
-
-isOther White Black = True
-isOther Black White = True
-isOther _     _     = False
-
-isWhite :: Stone -> Bool
-isWhite White = True
-isWhite _     = False
-
-isBlack :: Stone -> Bool
-isBlack = not . isWhite
-
----------- Board   
-
-type Score = (Integer, Integer)  
-type Position = (Integer, Integer)
-type BoardMap = DiffArray Position Stone
-data Board    = Board BoardMap | Nil
-
-board :: Board
-board         = Board $ _emptyBoard // _startingDisp
-
-isOut :: Position -> Bool
-isOut (x,y)   = x < 1 || x > 8 || y < 1 || y > 8
-
-isNil :: Board -> Bool
-isNil Nil     = True
-isNil _       = False
-
-score :: Board -> Score
-score (Board b) = foldr countStone (0,0) $ elems b
-  where countStone s (w,b)
-          | isWhite s = (w+1,b)
-          | isBlack s = (w,b+1)
-          | otherwise = (w,b)
-  
---- Internal
-
-_emptyBoard :: BoardMap
-_emptyBoard   = array _range [((i,j),None) | (i,j) <- _boardRange]
-
-_range ::(Position, Position)
-_range = ((1,1),(8,8))
-
-_boardRange :: [Position]
-_boardRange = range _range
-
-_startingDisp :: [Move]
-_startingDisp    = [((4,4),s1), ((5,5),s1), ((4,5),s2), ((5,4),s2)]
-  where (s1, s2) = (Black, White)
-
-
----------- Moves
-
+type Score     = (Integer,  Integer)  
+type Position  = (Integer,  Integer)
 type Move      = (Position, Stone)
 type Prospects = [Position]
+type BoardMap  = DiffArray Position Stone
 
-move :: Board -> Move -> Board
-move b@(Board bm) m
-  | null $ changes    = Nil
-  | otherwise         = Board $ bm // changes
-  where changes = getChanges b m
+-- the Board abstract datatype
 
-getChanges :: Board -> Move -> [Move]
-getChanges (Nil) _     = []
-getChanges (Board b) (p,s)
+data Board     = Board BoardMap | Nil
+
+instance Show Board where
+  show (Nil)     = "nil"
+  show (Board b) = intersperse ' ' $ concatMap ((:) '\n' . concat)
+                    $ makeRows $ map show $ elems b
+    where makeRows l@(h:hs) = (take 8 l) : (makeRows $ drop 8 l)
+          makeRows []       = []
+
+-- apply changes in the board  
+
+change :: Board -> [Move] -> Board
+change (Board b) cs = Board $ b // cs
+
+-- get a board
+
+board :: Board
+board = Board $ _emptyBoard // _initChangs
+
+_range      = ((1,1),(8,8))
+_boardRange = range _range
+_emptyBoard = array _range [((i,j),none) | (i,j) <- _boardRange]
+_initChangs = [((4,4),black), ((4,5),white),
+               ((5,4),white), ((5,5),black)]
+
+-- get changes that a move may arise in a board  
+
+prospects :: Board -> Stone -> Prospects
+prospects Nil _ = []
+prospects b   s = [ p | p <- _boardRange,
+                    not $ null $ changes b (p,s)]
+
+-- get changes that a move may arise in a board
+
+changes :: Board -> Move -> [Move]
+changes (Nil) _        = []
+changes (Board b) m@(p,s)
   | isOut p            = []
   | not $ isNone $ b!p = []
-  | otherwise          = getChangesM b p s
+  | null cs            = []
+  | otherwise          = m:cs
+  where cs = changesM b m
+  
+-- get changes that a move may arise in a BoardMap
 
-getProspects :: Board -> Stone -> Prospects
-getProspects Nil _ = []
-getProspects b   s = [ p | p <- _boardRange,
-                           not $ null $ getChanges b (p,s)]
-
---- Internal 
-
-getChangesM :: BoardMap -> Position -> Stone -> [Move]
-getChangesM b (x,y) s
-  | null changes       = []
-  | otherwise          = ((x,y),s) : changes                
-  where changes        = findChanges dx dy
-        dx             = [1, 1, 0, -1, -1, -1, 0, 1]
-        dy             = [0, 1, 1, 1, 0, -1, -1, -1] 
+changesM :: BoardMap -> Move -> [Move]
+changesM b ((x,y),s) = findChanges dx dy
+  where dx           = [1, 1, 0, -1, -1, -1, 0, 1]
+        dy           = [0, 1, 1, 1, 0, -1, -1, -1] 
         findChanges []     _      = []
         findChanges (i:is) (j:js) = findChanges is js  ++
                                      lookChanges (x+i,y+j) (i,j) []
@@ -105,21 +76,25 @@ getChangesM b (x,y) s
           | isNone $ b!(p,q) = []
           | b!(p,q) == s     = result
           | otherwise        = lookChanges (p+dp,q+dq) (dp,dq)
-                                (((p,q),s):result)
+                                (((p,q),s):result)  
 
+-- get the score of whites and blacks in a board
 
----------- Instances
+score :: Board -> Score
+score (Board b) = foldr countStone (0,0) $ elems b
+  where countStone s (w,b)
+          | isWhite s = (w+1,b)
+          | isBlack s = (w,b+1)
+          | otherwise = (w,b)
 
-instance Show Stone where
-  show White = "x"
-  show Black = "o"
-  show None  = "-"
- 
-instance Show Board where
-  show (Nil)     = "nil"
-  show (Board b) = intersperse ' ' $ concatMap ((:) '\n' . concat)
-                    $ makeRows $ map show $ elems b
+-- check if position is out of range
 
-makeRows l@(h:hs)    = (take 8 l) : (makeRows $ drop 8 l)
-makeRows []          = []
+isOut :: Position -> Bool
+isOut (x,y)   = x < a || y < b || x > c || y > d
+  where ((a,b), (c,d)) = _range
+
+-- check if board is null
+
+isNil Nil     = True
+isNil _       = False
 

@@ -1,37 +1,25 @@
-module Models.Game.Player where
+module Models.Game.Player    (Player(..), human, ai, stone,
+                              isHuman, isAI, isWhite, isBlack)
+  where
 
-import qualified Models.Game.Board as Board (isWhite)
-import Models.Game.Board                    (Stone) 
+import qualified
+  Models.Game.Stone as Stone (isWhite)
+import Models.Game.Stone     (Stone) 
 
-
------ Player
 
 data Player = Human Stone | AI Stone
               deriving (Show)
 
-
-human :: Stone -> Player
 human = Human
-
-ai :: Stone -> Player
 ai = AI
 
-
-isHuman :: Player -> Bool
-isHuman (Human _) = True
-isHuman _         = False
-
-isAI :: Player -> Bool
-isAI = not . isHuman
-
-
-stone :: Player -> Stone
 stone (Human s) = s
 stone (AI s)    = s
 
-isWhite :: Player -> Bool
-isWhite (Human s) = Board.isWhite s
-isWhite (AI s)    = Board.isWhite s
+isHuman (Human _) = True
+isHuman _         = False
+isAI              = not . isHuman
 
-isBlack :: Player -> Bool
-isBlack = not . isWhite
+isWhite (Human s) = Stone.isWhite s
+isWhite (AI s)    = Stone.isWhite s
+isBlack           = not . isWhite
