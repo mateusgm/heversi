@@ -11,7 +11,7 @@ data Player = Human Stone | AI Stone
               deriving (Show)
 
 human = Human
-ai = AI
+ai    = AI
 
 stone (Human s) = s
 stone (AI s)    = s

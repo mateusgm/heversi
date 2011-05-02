@@ -1,6 +1,5 @@
 module Models.Game.Board  (Score, Position, Move, Prospects, Board(..),
-                           change, board, prospects, changes, score,
-                           isOut, isNil)
+                           change, board, prospects, changes, score, isOut)
   where
 
 import Data.List
@@ -19,14 +18,13 @@ type BoardMap  = DiffArray Position Stone
 
 -- the Board abstract datatype
 
-data Board     = Board BoardMap | Nil
+newtype Board  = Board BoardMap 
 
 instance Show Board where
-  show (Nil)     = "nil"
-  show (Board b) = intersperse ' ' $ concatMap ((:) '\n' . concat)
-                    $ makeRows $ map show $ elems b
-    where makeRows l@(h:hs) = (take 8 l) : (makeRows $ drop 8 l)
-          makeRows []       = []
+  show (Board b) = intersperse ' ' $ (:) '\n' $ unlines $ map concat
+                   $ rows $ map show $ elems b
+    where rows l@(h:hs) = (take 8 l) : (rows $ drop 8 l)
+          rows []       = []
 
 -- apply changes in the board  
 
@@ -47,14 +45,12 @@ _initChangs = [((4,4),black), ((4,5),white),
 -- get changes that a move may arise in a board  
 
 prospects :: Board -> Stone -> Prospects
-prospects Nil _ = []
-prospects b   s = [ p | p <- _boardRange,
-                    not $ null $ changes b (p,s)]
+prospects b s = [p | p <- _boardRange,
+                 not $ null $ changes b (p,s)]
 
 -- get changes that a move may arise in a board
 
 changes :: Board -> Move -> [Move]
-changes (Nil) _        = []
 changes (Board b) m@(p,s)
   | isOut p            = []
   | not $ isNone $ b!p = []
@@ -92,9 +88,4 @@ score (Board b) = foldr countStone (0,0) $ elems b
 isOut :: Position -> Bool
 isOut (x,y)   = x < a || y < b || x > c || y > d
   where ((a,b), (c,d)) = _range
-
--- check if board is null
-
-isNil Nil     = True
-isNil _       = False
 
