@@ -1,12 +1,11 @@
-module Engine.Core      (startApp) where
+module System.Server    (startApp) where
 
-import Engine.Types
-import Engine.Routes     
+import System.Types
+import System.Routes     
 
-import Debug.Trace       (trace)
+import Debug.Trace      (trace)
 import Data.Map         (fromList, Map, union, singleton, empty)
 import Data.Either      (rights)
-import Text.Regex       (splitRegex, mkRegex)
 import Control.Monad    (msum)
 import Happstack.Server (nullConf, simpleHTTP, Response, ServerPart,
                          ok, dir, dirs, toResponse, path, 
@@ -31,11 +30,11 @@ createHandler :: Method -> Matching -> Controller -> ServerPart Response
 createHandler m z c = do matchMethod z m
                          decodeRequest m
                          pr <- lookPairs
-                         if (z == Strict) then strictHandler pr
-                            else path $ looseHandler pr
-   where strictHandler = handler . parsePairs
-         looseHandler pr = handler . union (parsePairs pr) . singleton "_url"
-         handler = ok . toResponse . c
+                         if (z == Strict)
+                           then strictHandler pr
+                           else path $ looseHandler pr
+   where strictHandler = c . parsePairs
+         looseHandler pr = c . union (parsePairs pr) . singleton "_url"
                      
                     
 -- ====================== auxiliary functions ===================
@@ -51,9 +50,4 @@ decodeRequest GET  = return ()
 parsePairs :: [(String, Either FilePath String)] -> Map String String
 parsePairs = fromList . map extractPair
   where extractPair (s1, Right s2) = (s1, s2)
-  
-parsePath :: String -> [String]  
-parsePath   = init . splitRegex (mkRegex "/|[?](.*)") . tail  
-
-
 

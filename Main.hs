@@ -1,6 +1,6 @@
 module Main where
 
-import Engine.Core    (startApp)
+import System.Server    (startApp)
 
 main :: IO ()
 main = startApp 

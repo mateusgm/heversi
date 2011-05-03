@@ -1,12 +1,14 @@
-module Engine.Types (Route(GETs, GETl, POSTs), Controller,
-                     Matching(Strict, Loose)) where
+module System.Types        (Route(GETs, GETl, POSTs), Controller,
+                            Matching(Strict, Loose))
+  where
 
-import Data.Map     (Map)
+import Happstack.Server    (ServerPart, Response)
+import Data.Map            (Map)
 
 data Matching       = Strict | Loose
                       deriving (Eq)
 type Path           = String
-type Controller     = Map String String -> String
+type Controller     = Map String String -> ServerPart Response
 
 
 -- the 's' refers to strict matching

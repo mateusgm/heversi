@@ -1,7 +1,7 @@
-module Controllers.Game (index, begin, play, get, end)
+module Controllers.Game   (index, begin, play, get, end)
   where
 
-import Engine.Types     (Controller)
+import System.Types       (Controller)
 import Data.Map
 
 

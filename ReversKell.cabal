@@ -12,6 +12,6 @@ Cabal-Version:       >= 1.2
 Executable haq
   Main-is:           Main.hs
   Exposed-Modules:
-  Build-Depends:     base >= 4.2, happstack >= 6.0
+  Build-Depends:     base >= 4.2, happstack >= 6.0, diffarray = 0.1, hstringtemplate >= 0.6.6
   
 -- reference: http://www.haskell.org/haskellwiki/How_to_write_a_Haskell_program

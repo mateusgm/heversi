@@ -1,7 +1,7 @@
-module Controllers.Chat (index, send, get)
+module Controllers.Chat   (index, send, get)
   where
 
-import Engine.Types     (Controller)
+import System.Types       (Controller)
 import Data.Map
 
 
