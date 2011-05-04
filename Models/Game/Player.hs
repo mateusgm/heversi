@@ -1,25 +1,34 @@
-module Models.Game.Player    (Player(..), human, ai, stone,
-                              isHuman, isAI, isWhite, isBlack)
+module Models.Game.Player    (Player, mkWhite, mkBlack, flip,
+                              black, white, none, other)
   where
 
-import qualified
-  Models.Game.Stone as Stone (isWhite)
-import Models.Game.Stone     (Stone) 
+
+data Player  = Black | White | None
+               deriving (Eq)
+
+instance Show Player where
+  show White = "x"
+  show Black = "o"
+  show None  = "-"
 
 
-data Player = Human Stone | AI Stone
-              deriving (Show)
+mkWhite     = White
+mkBlack     = Black
 
-human = Human
-ai    = AI
+flip White  = Black
+flip Black  = White
+flip _      = None
 
-stone (Human s) = s
-stone (AI s)    = s
+none None   = True
+none _      = False
 
-isHuman (Human _) = True
-isHuman _         = False
-isAI              = not . isHuman
+white White = True
+white _     = False
 
-isWhite (Human s) = Stone.isWhite s
-isWhite (AI s)    = Stone.isWhite s
-isBlack           = not . isWhite
+black Black = True
+black _     = False
+
+other White Black = True
+other Black White = True
+other _     _     = False
+
