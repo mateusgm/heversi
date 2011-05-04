@@ -1,9 +1,16 @@
-module Models.Game.Player    (Player, mkWhite, mkBlack, flip,
-                              black, white, none, other)
+module Models.Game.Player    (Player, Turn, Idle, Winner, Loser,
+                              mkWhite, mkBlack, mkNone,
+                              black, white, none, other, flip)
   where
 
+import Prelude                hiding (flip)
 
-data Player  = Black | White | None
+type Turn   = Player
+type Idle   = Player
+type Winner = Player
+type Loser  = Player
+
+data Player = Black | White | None
                deriving (Eq)
 
 instance Show Player where
@@ -14,6 +21,7 @@ instance Show Player where
 
 mkWhite     = White
 mkBlack     = Black
+mkNone      = None
 
 flip White  = Black
 flip Black  = White
