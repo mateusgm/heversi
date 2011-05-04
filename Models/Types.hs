@@ -40,19 +40,8 @@ type Direction = (Integer,  Integer)
 type Move      = (Position, Player)
 type Flip      = Move
 
-type BoardMap  = Array Position Player
+type Board     = Map Position Player
 
-newtype Board  = Board BoardMap
-                 deriving (Data, Typeable)
-
-instance Show Board where
-  show (Board b) = intersperse ' ' . (:) '\n' . unlines . map concat
-                   . rows . map show . elems $ b
-    where rows l@(h:hs) = (take 8 l) : (rows $ drop 8 l)
-          rows []       = []
-
-instance Version Board
-$(deriveSerialize ''Board)
 
 
 -- ================== the GameState ================== --

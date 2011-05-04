@@ -4,15 +4,17 @@
 
 module Models.Game where
 
-import Models.Game.Engine  (GameState, play, start)
-import Models.Types        (Game(..), GameDir(..))
+import Models.Game.Engine     (GameState, play, start)
+import Models.Types           (Game(..), GameDir(..))
 
-import Data.Data           (Data, Typeable)
-import Data.Map            (Map, empty, lookup)
-import Happstack.State     (Proxy(..), Query, Update,
-                            createCheckpoint, deriveSerialize,
-                            mkMethods, query, update,
-                            startSystemState, shutdownSystem)
+import Prelude                 hiding (lookup)
+import Data.Map               (Map, empty, lookup, size, insert)
+import Control.Monad.Reader   (ask)
+import Control.Monad.State    (get, put)
+import Happstack.State        (Proxy(..), Query, Update,
+                               mkMethods, query, update,
+                               startSystemState, shutdownSystem,
+                               createCheckpoint)
 
 
 -- ============= Database operations ============== --

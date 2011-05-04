@@ -3,16 +3,14 @@ module Models.Game.Board    (Position, Move, Flip, Board, board,
   where
 
 import Debug.Trace
-import Prelude               hiding (flip)
-import Data.List            (filter, length, intersperse)
-import Data.Array.Diff      (array, (//), (!), elems,
-                             bounds, range)
+import Prelude               hiding (flip, filter)
+import Data.Array           (range)
+import Data.Map             (update, fromList, (!), size, 
+                             findMin, findMax, keys, filter)
 
-import Models.Types         (Board(..), Move, Flip, Position) 
-import Models.Game.Player   (Player, black, white, none, other,
+import Models.Types         (Board, Move, Flip, Position, Direction) 
+import Models.Game.Player   (Player, black, white, none,
                              mkWhite, mkBlack, mkNone)
-
-
 
 
 -- =============== Low Level Operations =============== --
@@ -20,21 +18,30 @@ import Models.Game.Player   (Player, black, white, none, other,
 -- constants
 _bounds = ((1,1),(8,8))
 _range  = range _bounds
-_empty  = array _bounds [((i,j),mkNone) | (i,j) <- _range]
+_empty  = [((i,j),mkNone) | (i,j) <- _range]
 _flips  = [((4,4),b),((4,5),w),((5,4),w), ((5,5),b)]
   where (w,b) = (mkWhite, mkBlack)
 
--- get a board
+-- update a given position of a board with a new stone
+update' :: Move -> Board -> Board
+update' (p,s) b = update (choose s) p b
+  where choose s' _ = Just s'
+
+-- update the board according to the given moves
+updates :: Board -> [Move] ->Board
+updates b ms = foldr update' b ms
+
+-- get the initial board
 board :: Board
-board = Board $ _empty // _flips
+board = updates (fromList _empty) _flips
 
 -- get the player that owns a given position on the board
 player :: Board -> Position -> Player
-player (Board b) p = b!p
+player b p = b!p
 
 -- get the score of a given player on the board
 count :: Board -> Player -> Int
-count (Board b) s = length . filter ((==) s) . elems $ b
+count b s = size . filter (== s) $ b
 
 -- check if a given position on the board is empty
 empty :: Board -> Position -> Bool
@@ -42,16 +49,23 @@ empty b = none . player b
 
 -- check if position is out of the range of the board
 out :: Board -> Position -> Bool
-out (Board b) (x,y) = x < x' || y < y' || x > x'' || y > y''
-  where ((x',y'),(x'',y'')) = bounds b
+out b p = p >= (fst . findMin $ b) && p <= (fst . findMax $ b)     
 
--- flip stones that are in certain positions of the board 
 flip :: Board -> [Flip] -> Board
-flip (Board b) ms = Board $ b // ms
+flip = updates
 
--- check if a move in a given position is valid on the board
+-- check if a move in the given position is valid on the board
 valid :: Board -> Position -> Bool
 valid b p = (not . out b $ p) && (empty b $ p)
+
+-- get state of the board in a given a direction,
+-- beginning from a give position
+direction :: Board -> Direction -> Position -> [Move]
+direction b (di,dj) (i,j)
+  | not . out b $ (i,j) = current : direction b (di,dj) (i+di,j+dj) 
+  | otherwise           = []
+  where current = ((i,j), player b (i,j))
+
 
 -- =============== High Level operations =============== --
 
@@ -77,16 +91,8 @@ flipsDir b (p,s) d
           | otherwise   = affected ((p',s):a) xs 
           where (p',s') = x
 
--- get state of the board in a given a direction,
--- beginning from a give position
-direction :: Board -> Direction -> Position -> [(Position, Player)]
-direction b (di,dj) (i,j)
-  | not . out b $ (i,j) = current : direction b (di,dj) (i+di,j+dj) 
-  | otherwise           = []
-  where current = ((i,j), player b (i,j))
-
 -- get the possible moves for the given player on the board   
 prospects :: Board -> Player -> [Position]
-prospects b@(Board bm) s = [ p | p <- range . bounds $ bm,
-                             not . null . flips b $ (p,s) ]
+prospects b s = [ p | p <- keys b,
+                  not . null . flips b $ (p,s) ]
 

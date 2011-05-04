@@ -3,7 +3,7 @@ module Models.Game.Player     (Player, Turn, Idle, Winner, Loser,
                                white, black, none) 
   where
 
-import Models.Types           (Player(..)) 
+import Models.Types           (Player(..), Turn, Idle, Winner, Loser) 
 
 
 mkWhite     = White
