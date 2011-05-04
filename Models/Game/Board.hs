@@ -1,5 +1,5 @@
 module Models.Game.Board    (Position, Move, Flip, Board, board, 
-                             count, flip, flips, prospects)
+                             count, flip, flips, prospects, out)
   where
 
 import Debug.Trace
@@ -49,7 +49,9 @@ empty b = none . player b
 
 -- check if position is out of the range of the board
 out :: Board -> Position -> Bool
-out b p = p >= (fst . findMin $ b) && p <= (fst . findMax $ b)     
+out b (x,y) = x < m || x > p || y < n || y > q     
+  where (m,n) = fst . findMin $ b
+        (p,q) = fst . findMax $ b
 
 flip :: Board -> [Flip] -> Board
 flip = updates

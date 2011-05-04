@@ -1,4 +1,4 @@
-module Models.Game.Engine     (GameState, start, play)
+module Models.Game.Engine     (GameState(..), start, play)
   where
 
 import Prelude                 hiding (flip)
