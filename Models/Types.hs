@@ -59,7 +59,7 @@ $(deriveSerialize ''GameState)
 
 data User = Android |
             Human String Int 
-            deriving (Typeable, Data)
+            deriving (Typeable, Data, Show)
 
 instance Version User
 $(deriveSerialize ''User)
@@ -68,7 +68,7 @@ $(deriveSerialize ''User)
 -- ==================   the Game    ================== --
 
 data Game = Game GameState User User
-            deriving (Typeable, Data)
+            deriving (Typeable, Data, Show)
 
 instance Version Game
 $(deriveSerialize ''Game)

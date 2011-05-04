@@ -4,17 +4,14 @@
 
 module Models.Game where
 
-import Models.Game.Engine     (GameState, play, start)
-import Models.Types           (Game(..), GameDir(..))
+import Models.Game.Engine     (GameState(..), play, start)
+import Models.Types           (Game(..), GameDir(..), User(..))
 
-import Prelude                 hiding (lookup)
-import Data.Map               (Map, empty, lookup, size, insert)
+import Data.Map               (Map, empty, size, insert, (!))
 import Control.Monad.Reader   (ask)
 import Control.Monad.State    (get, put)
 import Happstack.State        (Proxy(..), Query, Update,
-                               mkMethods, query, update,
-                               startSystemState, shutdownSystem,
-                               createCheckpoint)
+                               mkMethods, query, update)
 
 
 -- ============= Database operations ============== --
@@ -23,12 +20,16 @@ import Happstack.State        (Proxy(..), Query, Update,
 addGame :: Game -> Update GameDir Int
 addGame g = do GameDir dir <- get
                let id = (size dir) + 1
-               put . GameDir . insert id g $ id
+               put . GameDir . insert id g $ dir
                return id
 
-getGame :: Int -> Query GameDir (Maybe Game)
+getGame :: Int -> Query GameDir Game
 getGame id = do GameDir dir <- ask
-                return . lookup dir $ id
+                return $ dir!id
 
 $(mkMethods ''GameDir ['addGame, 'getGame])
+
+
+
+
 
