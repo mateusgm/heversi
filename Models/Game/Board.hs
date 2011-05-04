@@ -5,31 +5,15 @@ module Models.Game.Board    (Position, Move, Flip, Board, board,
 import Debug.Trace
 import Prelude               hiding (flip)
 import Data.List            (filter, length, intersperse)
-import Data.Array.Diff      (DiffArray, array, (//), (!), elems,
+import Data.Array.Diff      (array, (//), (!), elems,
                              bounds, range)
-import qualified
-  Models.Game.Player as P   (flip)
+
+import Models.Types         (Board(..), Move, Flip, Position) 
 import Models.Game.Player   (Player, black, white, none, other,
                              mkWhite, mkBlack, mkNone)
 
 
--- =============== The Board datatype =============== --
 
--- some definitions
-type Position  = (Integer,  Integer)
-type Direction = (Integer,  Integer)
-type Move      = (Position, Player)
-type Flip      = Move
-
-type BoardMap  = DiffArray Position Player
-
--- the abstract type
-newtype Board  = Board BoardMap 
-instance Show Board where
-  show (Board b) = intersperse ' ' . (:) '\n' . unlines . map concat
-                   . rows . map show . elems $ b
-    where rows l@(h:hs) = (take 8 l) : (rows $ drop 8 l)
-          rows []       = []
 
 -- =============== Low Level Operations =============== --
 
@@ -101,8 +85,8 @@ direction b (di,dj) (i,j)
   | otherwise           = []
   where current = ((i,j), player b (i,j))
 
--- get the possible moves for the given a player   
+-- get the possible moves for the given player on the board   
 prospects :: Board -> Player -> [Position]
 prospects b@(Board bm) s = [ p | p <- range . bounds $ bm,
-                          not . null . flips b $ (p,s) ]
+                             not . null . flips b $ (p,s) ]
 
