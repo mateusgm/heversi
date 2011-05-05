@@ -10,34 +10,35 @@ import qualified
   Text.StringTemplate as HST     (render)
 import Text.StringTemplate       (STGroup, StringTemplate, toString,
                                   directoryGroup, addSubGroup,
-                                  getStringTemplate)
+                                  getStringTemplate, setAttribute,
+                                  setManyAttrib)
 
 -- filepaths
 
-_root = "~/documents/UFMG/2011-1/poc/src/Views/"
+_root = "Views/"
 _includes = _root ++ "Includes/"
 
 
 -- exported functions
 
 render :: String -> Map String String -> IO Response
-render p d = do t <- template p
+render p m = do t <- template p m
                 return . toResponse . HtmlString . HST.render $ t 
 
 render' :: String -> Map String String -> IO Response
-render' p d = do t <- template p
-                 return . toResponse . HtmlString . (++ (show d))
+render' p m = do t <- template p m
+                 return . toResponse . HtmlString . (++ (show m))
                   . toString $ t
 
 -- auxiliary functions
 
-template :: String -> IO (StringTemplate String)
-template p = do let (d,t) = path p
-                i <- directoryGroup _includes
-                g <- directoryGroup $ _root ++ d
-                let g' = addSubGroup g i
-                    Just t' = getStringTemplate t g'
-                return t'
+template :: String -> Map String String -> IO (StringTemplate String)
+template p m = do let (d,t) = path p
+                  i <- directoryGroup _includes
+                  g <- directoryGroup $ _root ++ d
+                  let g' = addSubGroup g i
+                      Just t' = getStringTemplate t g'
+                  return . setManyAttrib (toList m) $ t'
 
 path :: String -> (String, String)
 path p = splitAt i p

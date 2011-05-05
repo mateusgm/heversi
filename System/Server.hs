@@ -31,7 +31,7 @@ createHandler m z c = do matchMethod z m
                          if (z == Strict) then strictHandler pr
                           else path $ looseHandler pr
    where strictHandler = c . parsePairs
-         looseHandler pr = c . union (parsePairs pr) . singleton "_url"
+         looseHandler pr = c . union (parsePairs pr) . singleton "url"
                      
                     
 -- ====================== auxiliary functions ===================
