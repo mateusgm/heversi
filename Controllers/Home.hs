@@ -10,10 +10,9 @@ import Happstack.Server           (CookieLife(..), mkCookie, addCookie,
 
 
 index :: Controller
-index _ = do addCookie Session (mkCookie "requests" "0")
-             liftIO $ render "Home" "index"
+index m = do addCookie Session (mkCookie "requests" "0")
+             liftIO $ render' "Home/index.st" m
 
 start :: Controller
-start m = liftIO $ render "Home" "start"
-
+start m = liftIO $ render "Home/start" m
 

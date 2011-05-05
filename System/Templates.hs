@@ -2,6 +2,9 @@ module System.Templates          (render, render')
   where
 
 import System.Types              (HtmlString(HtmlString))
+
+import Data.Map                  (Map, toList)
+import Data.List                 (findIndices, splitAt)
 import Happstack.Server          (Response, toResponse)
 import qualified
   Text.StringTemplate as HST     (render)
@@ -9,21 +12,35 @@ import Text.StringTemplate       (STGroup, StringTemplate, toString,
                                   directoryGroup, addSubGroup,
                                   getStringTemplate)
 
+-- filepaths
 
-_root = "Views/"
+_root = "~/documents/UFMG/2011-1/poc/src/Views/"
 _includes = _root ++ "Includes/"
 
 
-render :: String -> String -> IO Response
-render s t = do
-  inc <- directoryGroup _includes :: IO (STGroup String)
-  grp <- directoryGroup $ _root ++ s :: IO (STGroup String)
-  let grp' = addSubGroup grp inc
-  let Just t' = getStringTemplate t grp'
-  return . toResponse . HtmlString . HST.render $ t' 
+-- exported functions
 
-render' :: String -> String -> IO Response
-render' s t = do
-  g <- directoryGroup $ _root :: IO (STGroup String)
-  let Just t' = getStringTemplate t g
-  return . toResponse . HtmlString . (++ s) . toString $ t' 
+render :: String -> Map String String -> IO Response
+render p d = do t <- template p
+                return . toResponse . HtmlString . HST.render $ t 
+
+render' :: String -> Map String String -> IO Response
+render' p d = do t <- template p
+                 return . toResponse . HtmlString . (++ (show d))
+                  . toString $ t
+
+-- auxiliary functions
+
+template :: String -> IO (StringTemplate String)
+template p = do let (d,t) = path p
+                i <- directoryGroup _includes
+                g <- directoryGroup $ _root ++ d
+                let g' = addSubGroup g i
+                    Just t' = getStringTemplate t g'
+                return t'
+
+path :: String -> (String, String)
+path p = splitAt i p
+  where i = if (null ix) then (0) else (1 + (last ix)) 
+        ix = findIndices (== '/') $ p
+
