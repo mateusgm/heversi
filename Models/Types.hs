@@ -72,16 +72,3 @@ data Game = Game GameState User User
 instance Version Game
 $(deriveSerialize ''Game)
 
-
--- ==================  the GameDir  ================== --
-
-newtype GameDir = GameDir (Map Int Game)
-                  deriving (Typeable, Data)
-
-instance Version GameDir
-$(deriveSerialize ''GameDir)
-
-instance Component GameDir where
-  type Dependencies GameDir = End
-  initialValue = GameDir empty  
-
