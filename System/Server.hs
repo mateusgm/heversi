@@ -16,7 +16,7 @@ import Happstack.Server     (Response, ServerPart, Method(..), Browsing(..),
 
 server _ = simpleHTTP nullConf handlers
   where handlers = msum $ (map routeHandler routes) ++ public 
-        public = [serveDirectory DisableBrowsing [] "public"]
+        public = [serveDirectory DisableBrowsing [] "Resources"]
 
 routeHandler :: Route -> ServerPart Response
 routeHandler (GETs "" c) =          createHandler GET Strict c
