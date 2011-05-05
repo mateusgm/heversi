@@ -1,16 +1,16 @@
-module System.Templates             (render)         
+module System.Templates          (render)         
   where
 
-import Happstack.Server             (Response, toResponse)
-import Happstack.Server.SimpleHTTP  (ToMessage(..))
-import Data.ByteString.Char8        (pack)         
-import Data.ByteString.Lazy.UTF8    (fromString)
+import System.Types              (HtmlString(HtmlString))
+import Happstack.Server          (Response, toResponse)
 import qualified
-  Text.StringTemplate as HST        (render)
-import Text.StringTemplate          (STGroup, StringTemplate,
-                                     directoryGroup, getStringTemplate)
+  Text.StringTemplate as HST     (render)
+import Text.StringTemplate       (STGroup, StringTemplate,
+                                  directoryGroup, getStringTemplate)
+
 
 _viewsDir = "Views/"
+
 
 render :: String -> String -> IO Response
 render s t = do
@@ -18,7 +18,3 @@ render s t = do
   let Just t' = getStringTemplate t g
   return . toResponse . HtmlString . HST.render $ t' 
 
-newtype HtmlString = HtmlString String
-instance ToMessage HtmlString where
-  toContentType _ = pack "text/html;charset=utf-8"
-  toMessage (HtmlString s) = fromString s

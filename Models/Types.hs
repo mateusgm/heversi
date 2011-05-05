@@ -5,13 +5,12 @@
 module Models.Types
   where
 
+import Data.Array             (Array)
+import Data.Map               (Map, empty)
 import Data.Data              (Data, Typeable)
 import Happstack.State        (Component(..), End, Version,
                                deriveSerialize)
---import Data.Array.Diff        (DiffArray, elems)
-import Data.Array             (Array, elems)
-import Data.Map               (Map, empty)
-import Data.List              (intersperse)
+
 
 
 -- ==================   the Player  ================== --

@@ -2,8 +2,9 @@
              GeneralizedNewtypeDeriving, MultiParamTypeClasses,
              TemplateHaskell, TypeFamilies #-}
 
-module Models.Game where
-
+module Models.Game            (GameDir)
+  where
+  
 import Models.Game.Engine     (GameState(..), play, start)
 import Models.Types           (Game(..), GameDir(..), User(..))
 

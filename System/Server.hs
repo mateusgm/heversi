@@ -1,22 +1,34 @@
 module System.Server    (startApp) where
 
 import System.Types
-import System.Routes     
+import System.Routes
+import System.State     
 
-import Debug.Trace      (trace)
-import Data.Map         (fromList, Map, union, singleton, empty)
-import Data.Either      (rights)
-import Control.Monad    (msum)
-import Happstack.Server (nullConf, simpleHTTP, Response, ServerPart,
-                         ok, dir, dirs, toResponse, path, 
-                         methodM, methodOnly, Method(GET, POST),
-                         Browsing(DisableBrowsing), serveDirectory,
-                         decodeBody, defaultBodyPolicy, lookPairs)
-
+import Control.Exception    (bracket)
+import Debug.Trace          (trace)
+import Data.Map             (fromList, Map, union, singleton, empty)
+import Data.Either          (rights)
+import Control.Monad        (msum)
+import Happstack.Server     (nullConf, simpleHTTP, Response, ServerPart,
+                             ok, dir, dirs, toResponse, path, 
+                             methodM, methodOnly, Method(GET, POST),
+                             Browsing(DisableBrowsing), serveDirectory,
+                             decodeBody, defaultBodyPolicy, lookPairs)
+import Happstack.State      (startSystemState, shutdownSystem,
+                             createCheckpoint, Proxy(..))
+                          
 -- ======================= main functions =======================
 
 startApp :: IO ()
-startApp = simpleHTTP nullConf handlers
+startApp = do bracket state checkAndShut server
+
+state = startSystemState a
+  where a = Proxy :: Proxy AppState
+  
+checkAndShut c = do createCheckpoint c
+                    shutdownSystem c  
+
+server _ = simpleHTTP nullConf handlers
   where handlers = msum $ (map routeHandler routes) ++ public 
         public = [serveDirectory DisableBrowsing [] "public"]
 
