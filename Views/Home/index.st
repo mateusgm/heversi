@@ -1,8 +1,6 @@
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-  </head>
-  <body>
+
+  $ header() $
+
     $! This is a comment. !$
   <p>The next line is an included template. Look at templates/my-favorite-animal.st</p>
 

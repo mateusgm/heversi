@@ -5,16 +5,15 @@ import System.Types               (Controller)
 import System.Templates           (render, render')
 
 import Control.Monad.Trans        (liftIO)
-import Happstack.Server           (ok, toResponse, lookCookieValue, 
-                                   readCookieValue, addCookie,
-                                   CookieLife(Session), mkCookie)
+import Happstack.Server           (CookieLife(..), mkCookie, addCookie,
+                                   lookCookieValue, readCookieValue)
 
 
 index :: Controller
 index _ = do addCookie Session (mkCookie "requests" "0")
-             liftIO $ render "" "myFavoriteAnimalBase"
+             liftIO $ render "Home" "index"
 
 start :: Controller
-start m = ok . toResponse $ "<html><p>oioioi</p></html>"
+start m = liftIO $ render "Home" "start"
 
 
