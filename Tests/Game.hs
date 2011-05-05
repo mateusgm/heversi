@@ -7,8 +7,6 @@ import Models.Game.AI
 import Models.Game
 
 import Debug.Trace
-import HappStack.State        (startSystemState, shutdownSystem,
-                               createCheckpoint)
 
 --------- testing game model - functions
 
@@ -22,15 +20,5 @@ game m@(Play b t _) = test $ trace (show p) p
   
 --------- testing game model - data
   
-g = start  
+g = start
 
---------- testing the state system
-
-rootState :: Proxy GameDir
-rootState = Proxy
-
-main = do startSystemState rootState
-          id1 <- update . AddGame . Game start Android $ Android
-          print id1
-          g1 <- query . GetGame $ 1 
-          print g1
