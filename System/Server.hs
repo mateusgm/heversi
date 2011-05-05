@@ -2,7 +2,7 @@ module System.Server    (startApp) where
 
 import System.Types
 import System.Routes
-import System.State     
+import System.State 
 
 import Control.Exception    (bracket)
 import Debug.Trace          (trace)
