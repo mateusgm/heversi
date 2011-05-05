@@ -1,32 +1,18 @@
-module System.Server    (startApp) where
+module System.Server        (server)
+  where
 
-import System.Types
-import System.Routes
-import System.State 
+import System.Types         (Route(..), Matching(..), Controller)
+import System.Routes        (routes)
 
-import Control.Exception    (bracket)
-import Debug.Trace          (trace)
-import Data.Map             (fromList, Map, union, singleton, empty)
-import Data.Either          (rights)
+import Data.Map             (Map, fromList, union, singleton)
 import Control.Monad        (msum)
-import Happstack.Server     (nullConf, simpleHTTP, Response, ServerPart,
-                             ok, dir, dirs, toResponse, path, 
-                             methodM, methodOnly, Method(GET, POST),
-                             Browsing(DisableBrowsing), serveDirectory,
+import Happstack.Server     (Response, ServerPart, Method(..), Browsing(..),
+                             nullConf, simpleHTTP, serveDirectory,
+                             ok, dirs, path, methodM, methodOnly,
                              decodeBody, defaultBodyPolicy, lookPairs)
-import Happstack.State      (startSystemState, shutdownSystem,
-                             createCheckpoint, Proxy(..))
+
                           
 -- ======================= main functions =======================
-
-startApp :: IO ()
-startApp = do bracket state checkAndShut server
-
-state = startSystemState a
-  where a = Proxy :: Proxy AppState
-  
-checkAndShut c = do createCheckpoint c
-                    shutdownSystem c  
 
 server _ = simpleHTTP nullConf handlers
   where handlers = msum $ (map routeHandler routes) ++ public 
@@ -42,9 +28,8 @@ createHandler :: Method -> Matching -> Controller -> ServerPart Response
 createHandler m z c = do matchMethod z m
                          decodeRequest m
                          pr <- lookPairs
-                         if (z == Strict)
-                           then strictHandler pr
-                           else path $ looseHandler pr
+                         if (z == Strict) then strictHandler pr
+                          else path $ looseHandler pr
    where strictHandler = c . parsePairs
          looseHandler pr = c . union (parsePairs pr) . singleton "_url"
                      
