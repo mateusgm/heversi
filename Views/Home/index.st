@@ -1,7 +1,8 @@
 $ header() $
 
-  <p>Olha o que estava na url:</p>
-  <p>$id$</p>
-  <p>Oloco!</p>
+  <form method="POST" action="/start">
+    <input type="text" name="name"/>
+    <input type="submit" value="Entrar"/>
+  </form>
   
 $ footer() $

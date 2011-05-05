@@ -3,7 +3,7 @@ module System.Server        (server)
 
 import System.Types         (Route(..), Matching(..), Controller)
 import System.Routes        (routes)
-
+import Debug.Trace
 import Data.Map             (Map, fromList, union, singleton)
 import Control.Monad        (msum)
 import Happstack.Server     (Response, ServerPart, Method(..), Browsing(..),

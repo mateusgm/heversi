@@ -11,8 +11,8 @@ import Happstack.Server           (CookieLife(..), mkCookie,
 
 
 index :: Controller
-index m = liftIO $ render' "Home/index" m
+index m = liftIO $ render "Home/index" m
 
 start :: Controller
-start m = liftIO $ render "Home/start" m
+start m = liftIO $ render' "Home/start" m
 
