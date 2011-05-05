@@ -2,26 +2,22 @@
              GeneralizedNewtypeDeriving, MultiParamTypeClasses,
              TemplateHaskell, TypeFamilies, TypeOperators #-}
 
-module System.State     
+module System.State 
   where
 
-import Data.Data          (Data, Typeable)
-import Happstack.State    (Component(..), End, Version, (:+:),
-                           deriveSerialize, mkMethods)
-                           
-import Models.Game        
+import Happstack.State    (Component(..), End, (:+:), mkMethods)
+import System.Types
+import Adaptors.Game
+
+-- Change this type definition
+
+type Entities = GameDir :+: End
 
 
-data AppState = AppState
-                deriving (Data, Typeable)
-
-instance Version AppState
-$(deriveSerialize ''AppState)
-
+-- Automagic
 
 instance Component AppState where
-  type Dependencies AppState = GameDir :+: End
+  type Dependencies AppState = Entities 
   initialValue = AppState
 
 $(mkMethods ''AppState [])
-

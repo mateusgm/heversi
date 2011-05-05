@@ -1,6 +1,6 @@
 {-# LANGUAGE DeriveDataTypeable, FlexibleContexts, 
              GeneralizedNewtypeDeriving, MultiParamTypeClasses,
-             TemplateHaskell, TypeFamilies #-}
+             TemplateHaskell, TypeFamilies, TypeOperators #-}
 
 module System.Types
   where
@@ -10,9 +10,10 @@ import Happstack.Server             (ServerPart, Response)
 import Happstack.Server.SimpleHTTP  (ToMessage(..))
 import Data.ByteString.Char8        (pack)         
 import Data.ByteString.Lazy.UTF8    (fromString)
+import Data.Data                    (Data, Typeable)
+import Happstack.State              (Version, deriveSerialize)
 
-
--- ==================    Routing    ================== --
+-- ==================    Routes     ================== --
 
 data Matching       = Strict | Loose
                       deriving (Eq)
@@ -26,13 +27,18 @@ data Route          = GETs  Path Controller  |
                       POSTs Path Controller  |
                       POSTl Path Controller
 
-
--- ==================    State     ================== --
+-- ==================   Template    ================== --
                       
 newtype HtmlString = HtmlString String
 instance ToMessage HtmlString where
   toContentType _ = pack "text/html;charset=utf-8"
   toMessage (HtmlString s) = fromString s
 
+-- ==================     State     ================== --
 
+data AppState = AppState
+                deriving (Data, Typeable)
+
+instance Version AppState
+$(deriveSerialize ''AppState)
 
