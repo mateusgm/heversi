@@ -7,7 +7,7 @@ import Models.Types     (User(..))
 
 
 addUser :: String -> IO User
-addUser   = query  . AddUser
+addUser = update  . AddUser
 
 getLogged :: IO ([(String, String)])
 getLogged = liftIO $ [("2","abcdef")   ,

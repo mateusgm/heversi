@@ -5,7 +5,7 @@
 module Adaptors.User
   where
   
-import Models.Types           (User)
+import Models.Types           (User(..))
 import Data.Map               (Map, size, insert, (!), empty)
 import Data.Data              (Data, Typeable)
 import Control.Monad.Reader   (ask)
@@ -20,14 +20,14 @@ newtype UserRepo = UserRepo (Map Int User)
 
 -- the operations
 
-addUser :: User -> Update UserRepo Int
-addUser u = do UserRepo dir <- get
-               let id = (size dir) + 1
-               put . UserRepo . insert id u $ dir
-               return id
+addUser :: String -> Update UserRepo User
+addUser n = do UserRepo r <- get
+               let u = User n $ (size r) + 1
+               put . UserRepo . insert id u $ r
+               return u
 
-getGame :: Int -> Query UserRepo User
-getGame id = do UserRepo dir <- ask
+getUser :: Int -> Query UserRepo User
+getUser id = do UserRepo dir <- ask
                 return $ dir!id
 
 -- the automagic
