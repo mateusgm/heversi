@@ -2,10 +2,10 @@
              GeneralizedNewtypeDeriving, MultiParamTypeClasses,
              TemplateHaskell, TypeFamilies #-}
 
-module Adaptors.Game
+module Adaptors.User
   where
   
-import Models.Types           (Game)
+import Models.Types           (User)
 import Data.Map               (Map, size, insert, (!), empty)
 import Data.Data              (Data, Typeable)
 import Control.Monad.Reader   (ask)
@@ -15,29 +15,29 @@ import Happstack.State        (Component(..), Version, End, Query,
 
 -- data type
 
-newtype GameRepo = GameRepo (Map Int Game)
+newtype UserRepo = UserRepo (Map Int User)
                    deriving (Typeable, Data)
 
 -- the operations
 
-addGame :: Game -> Update GameRepo Int
-addGame g = do GameRepo dir <- get
+addUser :: User -> Update UserRepo Int
+addUser u = do UserRepo dir <- get
                let id = (size dir) + 1
-               put . GameRepo . insert id g $ dir
+               put . UserRepo . insert id u $ dir
                return id
 
-getGame :: Int -> Query GameRepo Game
-getGame id = do GameRepo dir <- ask
+getGame :: Int -> Query UserRepo User
+getGame id = do UserRepo dir <- ask
                 return $ dir!id
 
 -- the automagic
 
-instance Version GameRepo
-$(deriveSerialize ''GameRepo)
+instance Version UserRepo
+$(deriveSerialize ''UserRepo)
 
-instance Component GameRepo where
-  type Dependencies GameRepo = End
-  initialValue = GameRepo empty  
+instance Component UserRepo where
+  type Dependencies UserRepo = End
+  initialValue = UserRepo empty  
 
-$(mkMethods ''GameRepo ['addGame, 'getGame])
+$(mkMethods ''UserRepo ['addUser, 'getUser])
 

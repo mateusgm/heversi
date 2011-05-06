@@ -5,24 +5,28 @@
 module System.State
   where
 
-import Happstack.State    (Component(..), End, Proxy(..), (:+:), mkMethods,
-                           startSystemState, createCheckpoint, shutdownSystem)
 import System.Types       (AppState(..))
+import Happstack.State    (Component(..), End, Proxy(..), (:+:),
+                           mkMethods, startSystemState,
+                           shutdownSystem, createCheckpoint, )
+
+-- change here
+
+import Adaptors.User
 import Adaptors.Game
 
--- Change this type definition
-
-type Entities = GameDir :+: End
+type Entities = UserRepo :+: GameRepo :+: End
 
 
-
--- Automagic
+-- api
 
 state = startSystemState a
   where a = Proxy :: Proxy AppState
   
 checkAndShut c = do createCheckpoint c
                     shutdownSystem c
+
+-- automagic
 
 instance Component AppState where
   type Dependencies AppState = Entities 
