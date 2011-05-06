@@ -1,13 +1,14 @@
 module System.Templates          (render, render')         
   where
 
-import System.Types              (HtmlString(HtmlString))
+import System.Types              (HtmlString(HtmlString), Attribute)
 
 import Data.Map                  (Map, toList)
 import Data.List                 (findIndices, splitAt)
 import Happstack.Server          (Response, toResponse)
 import qualified
   Text.StringTemplate as HST     (render)
+import Text.StringTemplate          (ToSElem(..))  
 import Text.StringTemplate       (STGroup, StringTemplate, toString,
                                   directoryGroup, addSubGroup,
                                   getStringTemplate, setAttribute,
@@ -21,18 +22,18 @@ _includes = _root ++ "Includes/"
 
 -- exported functions
 
-render :: String -> Map String String -> IO Response
+render :: String -> Map String Attribute -> IO Response
 render p m = do t <- template p m
                 return . toResponse . HtmlString . HST.render $ t 
 
-render' :: String -> Map String String -> IO Response
+render' :: String -> Map String Attribute -> IO Response
 render' p m = do t <- template p m
-                 return . toResponse . HtmlString . (++ (show m))
-                  . toString $ t
+                 return . toResponse . HtmlString . (++ (show m)) 
+                  . toString $ t 
 
 -- auxiliary functions
 
-template :: String -> Map String String -> IO (StringTemplate String)
+template :: String -> Map String Attribute -> IO (StringTemplate String)
 template p m = do let (d,t) = path p
                   i <- directoryGroup _includes
                   g <- directoryGroup $ _root ++ d
