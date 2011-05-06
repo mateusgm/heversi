@@ -42,7 +42,6 @@ type Flip      = Move
 type Board     = Map Position Player
 
 
-
 -- ================== the GameState ================== --
 
 data GameState = Play Board Turn   Idle  |
