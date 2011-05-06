@@ -1,4 +1,4 @@
-start:
+run:
 	runhaskell Main.hs &
   
 stop:
