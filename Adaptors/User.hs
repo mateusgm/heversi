@@ -22,7 +22,8 @@ newtype UserRepo = UserRepo (Map Int User)
 
 addUser :: String -> Update UserRepo User
 addUser n = do UserRepo r <- get
-               let u = User n $ (size r) + 1
+               let id = (size r) + 1
+                   u = Human n id
                put . UserRepo . insert id u $ r
                return u
 
