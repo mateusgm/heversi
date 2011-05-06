@@ -22,7 +22,7 @@ import Text.StringTemplate.Classes
 data Matching       = Strict | Loose
                       deriving (Eq)
 type Path           = String
-type Controller     = Map String Attribute -> ServerPart Response
+type Controller     = Map String String -> ServerPart Response
 
 -- the 's' refers to strict matching
 -- the 'l' refers to loose matching

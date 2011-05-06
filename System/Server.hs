@@ -1,8 +1,7 @@
 module System.Server        (server)
   where
 
-import System.Types         (Route(..), Matching(..), Controller,
-                             Attribute(..))
+import System.Types         (Route(..), Matching(..), Controller)
 import System.Routes        (routes)
 import Debug.Trace
 import Data.Map             (Map, fromList, union, insert, singleton)
@@ -31,9 +30,8 @@ createHandler m z c = do matchMethod z m
                          pr <- lookPairs
                          if (z == Strict) then strictHandler pr
                           else path $ looseHandler pr
-   where strictHandler = c . multi . parseData
-         looseHandler d p = c . multi . insert "url" p . parseData $ d
-         multi = singleton "request" . Multi
+   where strictHandler = c . parseData
+         looseHandler d p = c . insert "url" p . parseData $ d
                     
 -- ====================== auxiliary functions ===================
 
