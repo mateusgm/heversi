@@ -5,4 +5,4 @@ stop:
 	kill `pidof runghc`
 	kill `pidof ghc`
 
-restart: stop start
+restart: stop run
