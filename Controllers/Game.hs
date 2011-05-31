@@ -16,10 +16,13 @@ index m = liftIO . render "Game/index" . singleton "url" . Multi $ m
 begin :: Controller
 begin m = do userID <- readCookieValue "userID"
              user <- getUser userID
-            -- let a = insert "board" (List board)
-            --       . insert "state" (Multi state)
-             let a = singleton "user" (Multi user)
-             liftIO $ render "Game/board" a 
+             oponnent <- getUser $ m!"opponent"
+             game <- Game.begin user opponent
+             addCookie Session . mkCookie "gameID" $ id game
+             let params = List (board game) "board" 
+                       <+> Index (state game) "state"
+                       <+> Index user "user"      
+             liftIO $ render "Game/board" a
 
 play :: Controller
 play m  = liftIO . render "Game/index" . singleton "url" . Multi $ m
