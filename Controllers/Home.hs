@@ -18,6 +18,7 @@ index m = liftIO $ render "Home/index" . singleton "url" . Multi $  m
 start :: Controller
 start m = do let name = m!"name"
              user <- addUser name
+             addCookie Session . mkCookie "userID" $ user!"id" 
              let logged = getLogged
                  a = insert "logged" (List logged)
                      . singleton "user" . Multi $ user
