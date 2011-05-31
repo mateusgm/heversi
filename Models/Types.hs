@@ -62,10 +62,9 @@ data User = Android |
 instance Version User
 $(deriveSerialize ''User)
 
-
 -- ==================   the Game    ================== --
 
-data Game = Game GameState User User
+data Game = Game GameState User User Int
             deriving (Typeable, Data, Show)
 
 instance Version Game
