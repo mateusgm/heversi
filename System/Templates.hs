@@ -25,7 +25,7 @@ instance ToMessage HtmlString where
   toMessage (HtmlString s) = fromString s
 
 data Attribute = Multi  (Map String String) |
-                 List'   [(String,String)]   |
+                 List'  [(Map String String)]   |
                  Simple (String)
 
 instance ToSElem Attribute where
@@ -43,7 +43,7 @@ class Infoable a where
    toAttr :: a -> Attribute
    toAttrX :: [a] -> Attribute
    toAttr = Multi . toMap 
-   toAttrX = List' . concatMap (toList . toMap)
+   toAttrX = List' . map toMap
 
 instance Infoable (Map String String) where
    toMap m = m 

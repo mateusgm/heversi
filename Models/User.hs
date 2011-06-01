@@ -22,5 +22,6 @@ getLogged = do users <- query $ GetUsers
                return users
 
 instance Infoable User where
-   toMap (Human name id) = singleton (show id) name
+   toMap (Human name id) = insert "name" name
+                         . singleton "id" $ show id
           
