@@ -2,7 +2,12 @@
              GeneralizedNewtypeDeriving, MultiParamTypeClasses,
              TemplateHaskell, TypeFamilies, TypeOperators #-}
 
-module System.Routes where
+module System.Routes
+   (module Data.Map,
+    module Happstack.Server,
+    module Control.Monad.Trans,
+    Controller(..), Route(..), Matching(..)
+   ) where
 
 import Data.Map                 (Map, (!))
 import Happstack.Server         (ServerPart, Response)

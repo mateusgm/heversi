@@ -2,7 +2,12 @@
              GeneralizedNewtypeDeriving, MultiParamTypeClasses,
              TemplateHaskell, TypeFamilies, TypeOperators #-}
 
-module System.State where
+module System.State
+   (module Data.Data,
+    module Happstack.Server,
+    module Happstack.State,
+    state, checkAndShut
+   )where
 
 import Models.Repo
 

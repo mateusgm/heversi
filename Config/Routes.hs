@@ -1,4 +1,4 @@
-module System.Routes where
+module Config.Routes where
 
 import System.Routes      (Route(GETs, GETl, POSTs))
 import Controllers.Game    as Game

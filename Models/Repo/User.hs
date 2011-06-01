@@ -5,7 +5,9 @@
 module Models.Repo.User where
   
 import Models.Types
-import Data.Map               (size, insert, (!), empty)
+
+import Data.Data              (Data, Typeable)
+import Data.Map               (size, insert, (!), empty, toList)
 import Control.Monad.Reader   (ask)
 import Control.Monad.State    (get, put)
 
@@ -28,6 +30,10 @@ getUser :: Int -> Query UserRepo User
 getUser id = do UserRepo dir <- ask
                 return $ dir!id
 
+getUsers :: Query UserRepo [User]
+getUsers = do UserRepo dir <- ask
+              return . map snd . toList $ dir
+
 -- the automagic
 
 instance Version UserRepo
@@ -37,5 +43,5 @@ instance Component UserRepo where
   type Dependencies UserRepo = End
   initialValue = UserRepo empty  
 
-$(mkMethods ''UserRepo ['addUser, 'getUser])
+$(mkMethods ''UserRepo ['addUser, 'getUser,'getUsers])
 

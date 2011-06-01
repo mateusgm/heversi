@@ -1,9 +1,11 @@
-module System.Templates          (render, render')         
-  where
+module System.Templates
+   (Info(..), Infoable(..), render, render', (<+>), (<*>), (<!>),
+    module Data.Map
+   ) where
 
 import Config.Templates
 
-import Data.Map                  (Map, toList)
+import Data.Map                  (Map, toList, insert, singleton)
 import Data.List                 (findIndices, splitAt)
 import Happstack.Server          (ToMessage(..), Response, toResponse)
 import Data.ByteString.Char8     (pack)         
@@ -36,7 +38,29 @@ instance Show Attribute where
   show (Simple a) = a
   show (List' a) = show a
 
+class Infoable a where
+   toMap :: a -> Map String String
+   toAttr :: a -> Attribute
+   toAttrX :: [a] -> Attribute
+   toAttr = Multi . toMap 
+   toAttrX = List' . concatMap (toList . toMap)
 
+instance Infoable (Map String String) where
+   toMap m = m 
+
+data Info a = Pack a String |
+              List [a] String
+
+(<*>) :: Infoable a => Info a -> Info a -> Map String Attribute
+i1 <*> i2 = (<!>) i2 <+> i1 
+
+(<+>) :: Infoable a => Map String Attribute -> Info a -> Map String Attribute
+map <+> (Pack value key) = insert key (toAttr value) map
+map <+> (List value key) = insert key (toAttrX value) map
+
+(<!>) :: Infoable a => Info a -> Map String Attribute
+(<!>) (Pack value key) = singleton key $ toAttr value 
+(<!>) (List value key) = singleton key $ toAttrX value
 
 -- exported functions
 

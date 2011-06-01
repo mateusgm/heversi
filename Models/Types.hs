@@ -2,18 +2,24 @@
              GeneralizedNewtypeDeriving, MultiParamTypeClasses,
              TemplateHaskell, TypeFamilies #-}
 
-module Models.Types where
+module Models.Types 
+   (module Data.Map,
+    module Happstack.State,
+    module Models.Types
+   )where 
 
+import System.Templates
+import Data.Data           (Data, Typeable)
 import Data.Map            (Map)
-import System.State        (Component(..), End, Version, Query,
-                            Update, deriveSerialize, mkMethods,
-                            Data, Typeable)
+import Happstack.State     (Component(..), End, Version, Query,
+                            Update, deriveSerialize, mkMethods)
+
 
 
 -- ==================   the Player  ================== --
 
 data Player = Black | White | None
-               deriving (Eq, Data, Typeable)
+              deriving (Eq, Data, Typeable)
 
 instance Show Player where
   show White = "x"
@@ -53,7 +59,8 @@ $(deriveSerialize ''GameState)
 -- ==================   the User    ================== --
 
 data User = Android |
-            Human String Int 
+            Human { uName :: String,
+                    uID :: Int } 
             deriving (Typeable, Data, Show)
 
 instance Version User
@@ -61,7 +68,10 @@ $(deriveSerialize ''User)
 
 -- ==================   the Game    ================== --
 
-data Game = Game GameState User User Int
+data Game = Game { gState :: GameState,
+                   gBlack :: User,
+                   gWhite :: User,
+                   gID :: Int }
             deriving (Typeable, Data, Show)
 
 instance Version Game

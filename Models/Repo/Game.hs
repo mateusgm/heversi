@@ -5,6 +5,8 @@
 module Models.Repo.Game where
   
 import Models.Types
+
+import Data.Data              (Data, Typeable)
 import Data.Map               (size, insert, (!), empty)
 import Control.Monad.Reader   (ask)
 import Control.Monad.State    (get, put)
@@ -17,12 +19,12 @@ newtype GameRepo = GameRepo (Map Int Game)
 
 -- the operations
 
-addGame :: User -> User -> Update GameRepo Game
-addGame b w = do UserRepo r <- get
-                 let id = (size r) + 1
-                     g = Game start b w id
-                 put . GameRepo . insert id g $ r
-                 return g
+addGame :: GameState -> User -> User -> Update GameRepo Game
+addGame gs b w = do GameRepo r <- get
+                    let id = (size r) + 1
+                        g = Game gs b w id
+                    put . GameRepo . insert id g $ r
+                    return g
 
 getGame :: Int -> Query GameRepo Game
 getGame id = do GameRepo dir <- ask
