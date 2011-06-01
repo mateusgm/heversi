@@ -12,7 +12,7 @@ import Models.Game hiding (begin)
 
 
 index :: Controller
-index m = liftIO . render "Game/index" . (<!>) $ Pack m "url"
+index m = liftIO . render "Game/index" . (<!>) $ Map' "url" m 
 
 begin :: Controller
 begin m = do userID <- getCookie "userID"
@@ -20,18 +20,18 @@ begin m = do userID <- getCookie "userID"
              opponent <- getUser . read $ m!"opponent"
              game <- Game.begin user opponent
              setCookie "gameID" $ gID game
-             let info = Pack (board game) "board" 
-                     <*> Pack (state game) "state"
-                     <+> Pack user "user"      
+             let info = Map' "board" (board game)  
+                     <*> Map' "state" (state game) 
+                     <+> Map' "user" user      
              liftIO $ render "Game/board" info
 
 play :: Controller
-play m  = liftIO . render "Game/index" . (<!>) $ Pack m "url"
+play m  = liftIO . render "Game/index" . (<!>) $ Map' "url" m 
 
 get :: Controller
-get m   = liftIO . render "Game/index" . (<!>) $ Pack m "url"
+get m   = liftIO . render "Game/index" . (<!>) $ Map' "url" m 
 
 end :: Controller
-end m   = liftIO . render "Game/index" . (<!>) $ Pack m "url"
+end m   = liftIO . render "Game/index" . (<!>) $ Map' "url" m 
 
 -- liftIO . putStrLn $ (show user) ++ " " ++ (show m)

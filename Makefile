@@ -1,5 +1,5 @@
 run:
-	runhaskell -XFlexibleInstances Main.hs &
+	runhaskell -XFlexibleInstances -XTypeSynonymInstances Main.hs &
 
 stop:
 	kill `pidof runghc`
