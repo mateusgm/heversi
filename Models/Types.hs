@@ -47,9 +47,13 @@ type Board     = Map Position Player
 
 -- ================== the GameState ================== --
 
-data GameState = Play Board Turn   Idle  |
-                 Over Board Winner Loser |
-                 Draw Board
+data GameState = Play { sBoard :: Board,
+                        sTurn  :: Turn,
+                        sIdle  :: Idle }  |
+                 Over { sBoard :: Board,
+                        sWinner :: Winner,
+                        sLoser :: Loser } |
+                 Draw { sBoard :: Board }
                  deriving (Show, Data, Typeable)
 
 instance Version GameState

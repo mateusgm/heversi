@@ -59,7 +59,7 @@ instance Infoable (Map String String) where
    toMap m = m
 
 
-(<*>) :: Infoable a => Info a -> Info a -> Map String Info'
+(<*>) :: (Infoable a, Infoable b) => Info a -> Info b -> Map String Info'
 i1 <*> i2 = (<!>) i2 <+> i1 
 
 (<+>) :: Infoable a => Map String Info' -> Info a -> Map String Info'

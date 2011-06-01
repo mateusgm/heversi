@@ -10,8 +10,6 @@ import Models.Types
 import Models.Game.Engine
 import Models.Repo.Game
 
-import Prelude hiding (id)
-
 begin :: User -> User -> ServerPart Game
 begin u1 u2 = do game <- update $ AddGame start u1 u2
                  return game
@@ -20,15 +18,21 @@ getGame :: Int -> ServerPart Game
 getGame id = do game <- query $ GetGame id
                 return game
  
-board (Game g u1 u2 i) = u1
-state = board 
+board = toList . sBoard . gState
 
 instance Infoable Game where
-   toMap (Game g u1 u2 i) = insert "u1" (show . uID $ u1)
-                          . insert "u1" (show . uID $ u2)
-                          . singleton "id" $ show i
+   toMap g = insert "black" (show . gBlack $ g)
+           . insert "white" (show . gWhite $ g)
+           . singleton "id" . show $ gID g
 
+instance Infoable GameState where
+   toMap s = insert "turn" (show . sTurn $ s)
+           . singleton "idle" . show $ sIdle s
 
+instance Infoable (Position, Player) where
+   toMap (ps,pl) = insert "position" position
+                 .  singleton "player" $ show pl 
+      where position = show (fst ps) ++ show (snd ps)
 
 
 

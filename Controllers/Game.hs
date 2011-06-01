@@ -20,9 +20,10 @@ begin m = do userID <- getCookie "userID"
              opponent <- getUser . read $ m!"opponent"
              game <- Game.begin user opponent
              setCookie "gameID" $ gID game
-             let info = Map' "board" (board game)  
-                     <*> Map' "state" (state game) 
-                     <+> Map' "user" user      
+             let info = Map' "game" game
+                     <*> List "board" (board game)
+                     <+> Map' "state" (gState game)
+                     <+> Map' "user" user
              liftIO $ render "Game/board" info
 
 play :: Controller
