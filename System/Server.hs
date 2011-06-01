@@ -1,9 +1,7 @@
 module System.Server        (server)
   where
 
-import System.Types         (Route(..), Matching(..), Controller)
-import System.Routes        (routes)
-import Debug.Trace
+import System.Routes        (Route(..), Matching(..), Controller)
 import Data.Map             (Map, fromList, union, insert, singleton)
 import Control.Monad        (msum)
 import Happstack.Server     (Response, ServerPart, Method(..), Browsing(..),
@@ -14,7 +12,7 @@ import Happstack.Server     (Response, ServerPart, Method(..), Browsing(..),
                           
 -- ======================= main functions =======================
 
-server _ = simpleHTTP nullConf handlers
+server routes _ = simpleHTTP nullConf handlers
   where handlers = msum $ (map routeHandler routes) ++ public 
         public = [serveDirectory DisableBrowsing [] "Resources"]
 

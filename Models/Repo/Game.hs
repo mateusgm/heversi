@@ -2,17 +2,13 @@
              GeneralizedNewtypeDeriving, MultiParamTypeClasses,
              TemplateHaskell, TypeFamilies #-}
 
-module Adaptors.Game
-  where
+module Models.Repo.Game where
   
-import Models.Types           (Game)
-import Models.Game.Engine     (start)
-import Data.Map               (Map, size, insert, (!), empty)
-import Data.Data              (Data, Typeable)
+import Models.Types
+import Data.Map               (size, insert, (!), empty)
 import Control.Monad.Reader   (ask)
 import Control.Monad.State    (get, put)
-import Happstack.State        (Component(..), Version, End, Query,
-                               Update, deriveSerialize, mkMethods)
+
 
 -- data type
 

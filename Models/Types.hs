@@ -2,15 +2,12 @@
              GeneralizedNewtypeDeriving, MultiParamTypeClasses,
              TemplateHaskell, TypeFamilies #-}
 
-module Models.Types
-  where
+module Models.Types where
 
-import Data.Array             (Array)
-import Data.Map               (Map, empty)
-import Data.Data              (Data, Typeable)
-import Happstack.State        (Component(..), End, Version,
-                               deriveSerialize)
-
+import Data.Map            (Map)
+import System.State        (Component(..), End, Version, Query,
+                            Update, deriveSerialize, mkMethods,
+                            Data, Typeable)
 
 
 -- ==================   the Player  ================== --

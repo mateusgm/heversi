@@ -1,9 +1,9 @@
-module Models.Game 
-  where
+module Models.Game where
 
-import qualified Adaptors.Game as G  
-import Models.Game.Engine     (play, start)
-import Models.Types           (User, Game(..))
+import Models.Type
+import Models.Repo.Game
+import System.State
+
 
 begin :: User -> User -> ServerPart Game
 begin u1 u2 = do game <- update $ G.AddGame u1 u2

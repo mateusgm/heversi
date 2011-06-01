@@ -2,20 +2,24 @@
              GeneralizedNewtypeDeriving, MultiParamTypeClasses,
              TemplateHaskell, TypeFamilies, TypeOperators #-}
 
-module System.State
-  where
+module System.State where
 
-import System.Types       (AppState(..))
-import Happstack.State    (Component(..), End, Proxy(..), (:+:),
-                           mkMethods, startSystemState,
-                           shutdownSystem, createCheckpoint, )
+import Models.Repo
 
--- change here
+import Data.Data          (Data, Typeable)
+import Happstack.Server   (ServerPart) 
+import Happstack.State
 
-import Adaptors.User
-import Adaptors.Game
+
+-- the construction
 
 type Entities = UserRepo :+: GameRepo :+: End
+
+
+-- data
+
+data AppState = AppState
+                deriving (Data, Typeable)
 
 
 -- api
@@ -26,7 +30,11 @@ state = startSystemState a
 checkAndShut c = do createCheckpoint c
                     shutdownSystem c
 
+
 -- automagic
+
+instance Version AppState
+$(deriveSerialize ''AppState)
 
 instance Component AppState where
   type Dependencies AppState = Entities 

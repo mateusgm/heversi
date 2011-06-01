@@ -1,21 +1,27 @@
-module System.Routes      (routes)
-  where
+{-# LANGUAGE DeriveDataTypeable, FlexibleContexts, 
+             GeneralizedNewtypeDeriving, MultiParamTypeClasses,
+             TemplateHaskell, TypeFamilies, TypeOperators #-}
 
-import System.Types       (Route(GETs, GETl, POSTs))
-import Controllers.Game     as Game
-import Controllers.Home    as Home     
+module System.Routes where
+
+import Data.Map                 (Map, (!))
+import Happstack.Server         (ServerPart, Response)
+import Control.Monad.Trans      (liftIO)
+
+data Matching       = Strict | Loose
+                      deriving (Eq)
+type Path           = String
+type Controller     = Map String String -> ServerPart Response
+
+-- the 's' refers to strict matching
+-- the 'l' refers to loose matching
+data Route          = GETs  Path Controller  | 
+                      GETl  Path Controller  | 
+                      POSTs Path Controller  |
+                      POSTl Path Controller
 
 
 
-routes = [GETs  ""            Home.index ,
-          POSTs "start"       Home.start ,
-          GETs  "game"        Game.index ,
-          POSTs "game/begin"  Game.begin ,
-          GETs  "game/play"   Game.play  ,
-          GETl  "game/get"    Game.get   ,
-          GETl  "game/end"    Game.end   ]
---          GETs  "chat"        Chat.index ,
---          POSTl "chat/send"   Chat.send  ,
---          GETl  "chat/get"    Chat.get   ]
-    
+
+
 

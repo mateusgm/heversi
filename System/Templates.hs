@@ -1,23 +1,41 @@
 module System.Templates          (render, render')         
   where
 
-import System.Types              (HtmlString(HtmlString), Attribute)
+import Config.Templates
 
 import Data.Map                  (Map, toList)
 import Data.List                 (findIndices, splitAt)
-import Happstack.Server          (Response, toResponse)
+import Happstack.Server          (ToMessage(..), Response, toResponse)
+import Data.ByteString.Char8     (pack)         
+import Data.ByteString.Lazy.UTF8 (fromString)
 import qualified
   Text.StringTemplate as HST     (render)
-import Text.StringTemplate          (ToSElem(..))  
 import Text.StringTemplate       (STGroup, StringTemplate, toString,
                                   directoryGroup, addSubGroup,
                                   getStringTemplate, setAttribute,
-                                  setManyAttrib)
+                                  setManyAttrib, ToSElem(..))
 
--- filepaths
+-- types
 
-_root = "Views/"
-_includes = _root ++ "Includes/"
+newtype HtmlString = HtmlString String
+instance ToMessage HtmlString where
+  toContentType _ = pack "text/html;charset=utf-8"
+  toMessage (HtmlString s) = fromString s
+
+data Attribute = Multi  (Map String String) |
+                 List'   [(String,String)]   |
+                 Simple (String)
+
+instance ToSElem Attribute where
+  toSElem (Multi a)  = toSElem a
+  toSElem (List' a)   = toSElem a 
+  toSElem (Simple a) = toSElem a 
+
+instance Show Attribute where
+  show (Multi a)  = show a
+  show (Simple a) = a
+  show (List' a) = show a
+
 
 
 -- exported functions

@@ -1,24 +1,19 @@
-module Controllers.Home        (index, start)
-  where
+module Controllers.Home where
 
-import System.Types            (Controller, Attribute(..))
-import System.Templates        (render)
-import Models.User             (addUser, getLogged)
+import System.Routes
+import System.Templates
+import System.Cookies
 
-import Data.Map                ((!), insert, singleton)
-import Control.Monad.Trans     (liftIO)
-import Happstack.Server        (CookieLife(..), mkCookie,
-                                addCookie, lookCookieValue,
-                                readCookieValue)
+import Models.User
 
 
 index :: Controller
-index m = liftIO $ render "Home/index" . singleton "url" . Multi $  m
+index m = liftIO $ render "Home/index" . (<!>) $ Pack m "url"
 
 start :: Controller
 start m = do user <- addUser $ m!"name"
              logged <- getLogged
-             addCookie Session . mkCookie "userID" $ id user
-             let params = List logged "logged" 
-                       <+> Index user "user"
-             liftIO $ render "Home/start" params
+             setCookie "userID" $ id user
+             let info = Pack logged "logged" 
+                     <*> Pack user "user"
+             liftIO $ render "Home/start" info
