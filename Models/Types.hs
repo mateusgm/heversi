@@ -26,6 +26,13 @@ instance Show Player where
   show Black = "o"
   show None  = "-"
 
+instance Read Player where
+   readsPrec _ = parsePlayer
+      where parsePlayer s
+              | s == "x" = (White,""):[]
+              | s == "o" = (Black,""):[]
+              | otherwise = (None,""):[]
+
 instance Version Player
 $(deriveSerialize ''Player)
 
@@ -54,7 +61,7 @@ data GameState = Play { sBoard :: Board,
                         sWinner :: Winner,
                         sLoser :: Loser } |
                  Draw { sBoard :: Board }
-                 deriving (Show, Data, Typeable)
+                 deriving (Eq, Show, Data, Typeable)
 
 instance Version GameState
 $(deriveSerialize ''GameState)
@@ -77,7 +84,7 @@ data Game = Game { gState :: GameState,
                    gIdle :: User,
                    gOwner :: User,
                    gID :: Int }
-            deriving (Typeable, Data, Show)
+            deriving (Eq, Typeable, Data, Show)
 
 instance Version Game
 $(deriveSerialize ''Game)

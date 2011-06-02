@@ -1,6 +1,6 @@
 
+   var getURL = '/game/get';
    var updateURL = '/game/update';
-   var isTurn = false;
 
    function setUpdates(time) {
       update();
@@ -14,7 +14,7 @@
    
    function update() {
       console.log('update!');
-      $.post(updateURL, updateGame);
+      $.get(getURL, updateGame);
    }
    
    function setPosition(x,y) {
@@ -37,16 +37,16 @@
          else if (updates.state.turn == 'x')
             $('#turn').html('Vez do branco');
          $('#black').html(updates.state.black);
-         $('#white').html(updates.state.black);
-         setUserTurn(updates.state.turn);
+         $('#white').html(updates.state.white);
       }
       
       if (updates.board) {
          $.each(updates.board, updatePosition);
       }
 
-      if (updates.available && isTurn) {
-         $('.position').each(makeNotAvailable);
+      $('.position').each(makeNotAvailable);
+      if (updates.game.stone == updates.state.turn
+           && updates.available) {
          $.each(updates.available, makeAvailable);
       }     
    }
@@ -56,14 +56,7 @@
          .removeClass('stone-o stone-x stone--')
          .addClass('stone-' + value);
    }
-
-   function setUserTurn(turn) {
-      var user = $('#stone').text();
-      if (user == turn) isTurn = true;
-      else isTurn = false;
-   }
  
-   
    function makeNotAvailable (index, element) {
       $(element).text(function() {
          return '';

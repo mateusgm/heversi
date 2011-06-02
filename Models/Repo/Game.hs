@@ -7,7 +7,7 @@ module Models.Repo.Game where
 import Models.Types
 
 import Data.Data              (Data, Typeable)
-import Data.Map               (size, insert, (!), empty)
+import Data.Map               (size, insert, (!), empty, update, member)
 import Control.Monad.Reader   (ask)
 import Control.Monad.State    (get, put)
 
@@ -26,6 +26,12 @@ addGame gs b w = do GameRepo r <- get
                     put . GameRepo . insert id g $ r
                     return g
 
+saveGame :: Game -> Update GameRepo ()
+saveGame g = do GameRepo r <- get
+                let r' = update (\_ -> Just g) (gID g) r
+                put . GameRepo $ r'
+                return ()
+
 getGame :: Int -> Query GameRepo Game
 getGame id = do GameRepo dir <- ask
                 return $ dir!id
@@ -39,5 +45,5 @@ instance Component GameRepo where
   type Dependencies GameRepo = End
   initialValue = GameRepo empty  
 
-$(mkMethods ''GameRepo ['addGame, 'getGame])
+$(mkMethods ''GameRepo ['addGame, 'getGame,'saveGame])
 
