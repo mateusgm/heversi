@@ -73,6 +73,7 @@ map <+> (List key value) = insert key (toAttrX value) map
 -- exported functions
 
 render :: String -> Map String Info' -> IO Response
+render "" _ = return . toResponse $ ""
 render p m = do t <- template p m
                 return . toResponse . HtmlString . HST.render $ t 
 

@@ -1,5 +1,5 @@
 module Controllers.Game
-   (create, play, update, get
+   (create, play, update, get, index
    )where
 
 import System.Routes
@@ -11,13 +11,22 @@ import qualified Models.Game as Game (create, play)
 import Models.Game hiding (create, play)
 
 
+index :: Controller
+index m = do userID <- getCookie "user"
+             user <- getUser userID
+             logged <- getLogged
+             let info = List "logged" logged 
+                     <*> Map' "user" user
+             liftIO $ render "Home/start" info
+
+
 create :: Controller
 create m = do userID <- getCookie "user"
               user <- getUser userID
               opponent <- getUser . read $ m!"opponent"
               game <- Game.create user opponent
               setCookie "game" $ gID game
-              liftIO $ render "Game/create" empty
+              liftIO $ render "" empty
 
 play :: Controller
 play m = do userID <- getCookie "user"

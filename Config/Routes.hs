@@ -7,6 +7,7 @@ import Controllers.Home    as Home
 
 routes = [GETs  ""            Home.index ,
           POSTs "start"       Home.start ,
+          GETs  "game"        Game.index ,
           POSTs "game/create" Game.create,
           GETs  "game/play"   Game.play  ,
           GETs  "game/get"    Game.get  ,          
