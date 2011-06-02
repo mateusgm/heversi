@@ -9,4 +9,6 @@
     <script type="text/javascript" src="/scripts/play.js"></script>
   </head>
   <body>
+  
+  <div id="wrapper">
 

@@ -6,20 +6,93 @@ a {
    text-decoration: none;
 }
 
-/******************* tags *******************/
+/******************* structure *******************/
+
+
+#wrapper {
+   margin: auto;
+   width: 480px;
+   height: auto;    
+}
+
+#scores {
+   width: 460px;
+   height: 28px;
+   background: url(../skins/padrao/placar.bmp);
+   padding: 10px;
+}
 
 #board {
    display: table;
    height: auto;
+   padding: 48px;   
+   background: url(../skins/padrao/fundo.bmp) no-repeat;  
 }
 
-.position {
-   width: 10px;
+/******************* header *******************/
+
+#scores {
+   font-size: 16px;
+   color: white;  
+   font-family: serif;   
+}
+
+#scores div {
+   padding-top: 5px;
+}
+
+#turn {
+   width: 196px;
+   height: 28px;
    display: block;
    float: left;
-   padding: 5px 10px;
+   padding-left: 10px;
+   text-transform: uppercase;
+}
+
+.count {
+   float: left;
+}
+
+#black {
+   margin-left: 133px;
+}
+
+#white {
+   margin-left: 74px;
+}
+
+/******************* board *******************/
+
+.position {
+   width: 48px;
+   height: 48px;
+   display: block;
+   float: left;
+}
+
+.position a {
+   width: 48px;
+   height: 48px;
+   display: block;
+   background: black;
+   opacity: 0.45;
 }
 
 .x1 {
    clear: left;
 }
+
+.stone-o {
+   background: url(../skins/padrao/preto.bmp);
+}
+
+.stone-x {
+   background: url(../skins/padrao/branco.bmp);
+}
+
+.stone-- {
+   background: url(../skins/padrao/vazio.bmp);
+}
+
+
