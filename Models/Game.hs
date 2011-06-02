@@ -30,7 +30,8 @@ instance Infoable GameState where
            . singleton "idle" . show $ sIdle s
 
 instance Infoable (Position, Player) where
-   toMap (ps,pl) = insert "position" position
+   toMap (ps,pl) = insert "x" (show . snd $ ps)
+                 . insert "y" (show . fst $ ps)
                  .  singleton "player" $ show pl 
       where position = show (fst ps) ++ show (snd ps)
 
