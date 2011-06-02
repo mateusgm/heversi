@@ -1,18 +1,24 @@
 {
    "state": {
       "turn": "$state.turn$",
-      "black": "$state.black$",
-      "white": "$state.white$"
+      "black": $state.black$,
+      "white": $state.white$
       },
    "user": {
-      "id": "$user.id$",
+      "id": $user.id$,
       "name": "$user.name$"
       },
    "game": {
-      "id": "$game.id$",
+      "id": $game.id$,
       "stone": "$game.stone$",
-      "opponent": "$game.opponent$",     
+      "opponent": $game.opponent$     
       },
-   "board": { $board:jsonList()$ },
-   "available": [ $available:available() ]
+   "board": {
+      $board:jsonList()$
+      "nenhum": ""
+      },
+   "available": [
+      $available:available()$
+      {"nenhum": ""}
+   ]
 }

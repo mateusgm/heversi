@@ -76,11 +76,11 @@ a {
 }
 
 .position a {
-   width: 48px;
-   height: 48px;
+   width: 46px;
+   height: 46px;
    display: block;
    background: black;
-   opacity: 0.45;
+   opacity: 0.25;
 }
 
 .x1 {

@@ -39,7 +39,7 @@ available g = prospects (sBoard . gState $ g) . stone (gTurn g) $ g
 -- template instances
 
 instance Infoable Game where
-   toMap g = insert "opponent" (show . gIdle $ g)
+   toMap g = insert "opponent" (show . uID . gIdle $ g)
            . insert "stone" (show . stone (gTurn g) $ g)
            . singleton "id" . show $ gID g
 
@@ -49,7 +49,7 @@ instance Infoable GameState where
            . singleton "black" . show . count (sBoard s) $ mkBlack
 
 instance Infoable Position where
-   toMap (x,y) = insert "x" (show x)
+   toMap (y,x) = insert "x" (show x)
                  . singleton "y" $ show y
 
 instance Infoable (Position, Player) where

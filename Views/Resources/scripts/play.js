@@ -1,89 +1,79 @@
 
+   var updateURL = '/game/update';
+   var isTurn = false;
+
    function setUpdates(time) {
-      update()
-      setInterval(update, time);
+      update();
+      //setInterval(update, time);
    }
 
-   function play(x, y) {
+   function play(x,y) {
       setPosition(x,y);
       setResponse();  
    }
    
    function update() {
       console.log('update!');
-      var url = '/game/get';
-      $.get(url, updateGame);
+      $.post(updateURL, updateGame);
    }
    
    function setPosition(x,y) {
-      $('#position-x').val(function(i,v){
-         return x;
-      });
-      $('#position-y').val(function(i,v){
-         return y;
-      });
+      $('#position-x').val(x);
+      $('#position-y').val(y);
    }
    
    function setResponse() {
-      var url = '/game/get';
       var move = $('#move').serializeArray();
-      $.post(url, move, updateGame);
+      $.post(updateURL, move, updateGame);
    }
    
    function updateGame(data) {
-      console.log(data)
+      console.log(data);
       var updates = $.parseJSON(data);
       
-      if (updates.state) {
-         // { turn: 'x', black: 50, white: 60 }
-         $('#turn').val(function(){
-            if (updates.state.turn == 'o') {
-               return 'Vez do preto';
-            } else if (updates.state.turn == 'x') {
-               return 'Vez do branco';
-            }
-         });
-         $('#black').val(function(){ return updates.state.black; });
-         $('#white').val(function(){ return updates.state.black; });
+      if (updates.state) {               
+         if (updates.state.turn == 'o')
+            $('#turn').html('Vez do preto');
+         else if (updates.state.turn == 'x')
+            $('#turn').html('Vez do branco');
+         $('#black').html(updates.state.black);
+         $('#white').html(updates.state.black);
          setUserTurn(updates.state.turn);
       }
+      
       if (updates.board) {
-         // { 11: "o", ... }
          $.each(updates.board, updatePosition);
-      }      
-      if (updates.available && isUserTurn()) {
-         // [{x: 1, y: 2}, ...]
+      }
+
+      if (updates.available && isTurn) {
          $('.position').each(makeNotAvailable);
          $.each(updates.available, makeAvailable);
       }     
    }
    
-   var isTurn = false;
+   function updatePosition(index, value) {
+      $('#position-' + index)
+         .removeClass('stone-o stone-x stone--')
+         .addClass('stone-' + value);
+   }
+
    function setUserTurn(turn) {
-      var user = $('#stone').val();
+      var user = $('#stone').text();
       if (user == turn) isTurn = true;
       else isTurn = false;
    }
-   function isUserTurn(turn) {
-      return isTurn;
-   }
-   
+ 
    
    function makeNotAvailable (index, element) {
-      $(element).val(function() {
+      $(element).text(function() {
          return '';
       });
    }
    
    function makeAvailable (index, value) {
-      $('#position-' + value.x + value.y).val(function() {
-         var onclick = 'play(' + value.x + ',' + value.y + ');';
-         return '<a href="javascript:void(0);" onclick="' + onclick + '"></a>';
-      });
+      var onclick = 'play(' + value.x + ',' + value.y + ');';
+      var link = '<a href="javascript:void(0);" onclick="' + onclick + '"></a>';
+      $('#position-' + value.x + value.y).html(link);
    }
    
-   function updatePosition(index, value) {
-      $('#position-' + index)
-         .removeClass('stone-o stone-x stone--')
-         .addClass('stone_' + value);
-   }
+

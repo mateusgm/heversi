@@ -1,1 +1,1 @@
-"$it.x$$it.y$": "$it.stone$", $it
+"$it.x$$it.y$": "$it.player$",
