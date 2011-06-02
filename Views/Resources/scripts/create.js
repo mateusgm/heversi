@@ -1,15 +1,17 @@
        
-   function setFormHandler() {
-      console.log('oi');
-      $('#create').submit(function(){
-         var url = '/game/create';
-         var data = $(this).serializeArray();
-         $.post(url,data,success);
-         return false;
-      }); 
+   function setFormHandler(target) {
+      return function (){
+         $('#create').submit(function(){
+            var handler = $(this).attr('action');
+            var data = $(this).serializeArray();
+            $.post(handler,data,success(target));
+            return false;
+         });
+      } 
    }
    
-   function success() {
-      var url = '/game/play';
-      window.location.href = url;      
+   function success(target) {
+      return function () {
+         window.location.href = target;
+      }      
    }

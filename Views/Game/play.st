@@ -22,7 +22,7 @@ $ header() $
    </div>
     
    <div id="board">
-      $board:list()$
+      $board:board_list()$
    </div>   
 
 $ footer() $

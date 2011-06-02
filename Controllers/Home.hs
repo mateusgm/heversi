@@ -14,6 +14,4 @@ start :: Controller
 start m = do user <- addUser $ m!"name"
              logged <- getLogged
              setCookie "user" $ uID user
-             let info = List "logged" logged 
-                     <*> Map' "user" user
-             liftIO $ render "Home/start" info
+             liftIO $ render "" empty

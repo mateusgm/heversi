@@ -1,7 +1,8 @@
 $ header() $
 
    <script>
-      \$(document).ready(setFormHandler);
+      var target = '/game/play';
+      \$(document).ready(setFormHandler(target));
    </script>
 
   <p>Olá, $user.name$!</p>
@@ -10,7 +11,7 @@ $ header() $
   <form id="create" method="POST" action="/game/create">
     <p>
       <input type="radio" name="opponent" value="0"/>Android</br>
-      $logged:list()$  
+      $logged:user_list()$  
     </p>
     <input type="submit" value="Jogar"/>
   </form>

@@ -17,7 +17,7 @@ index m = do userID <- getCookie "user"
              logged <- getLogged
              let info = List "logged" logged 
                      <*> Map' "user" user
-             liftIO $ render "Home/start" info
+             liftIO $ render "Game/index" info
 
 
 create :: Controller
