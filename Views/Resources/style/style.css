@@ -15,6 +15,10 @@ a {
    height: auto;    
 }
 
+#info {
+   display: none;
+}
+
 #scores {
    width: 460px;
    height: 28px;

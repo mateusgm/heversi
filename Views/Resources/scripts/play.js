@@ -31,6 +31,7 @@
    }
    
    function updateGame(data) {
+      console.log(data)
       var updates = $.parseJSON(data);
       
       if (updates.state) {

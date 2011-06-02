@@ -1,5 +1,8 @@
-module Models.Game.Engine     (GameState(..), start, play)
-  where
+module Models.Game.Engine
+   (module Models.Game.Player,
+    module Models.Game.Board,
+    GameState(..), start, play
+   ) where
 
 import Prelude                 hiding (flip)
 

@@ -1,5 +1,5 @@
 module Controllers.Game
-   (index, begin, play, get, end
+   (create, play, update
    )where
 
 import System.Routes
@@ -7,32 +7,41 @@ import System.Templates
 import System.Cookies
 
 import Models.User
-import qualified Models.Game as Game (begin)
-import Models.Game hiding (begin)
+import qualified Models.Game as Game (create)
+import Models.Game hiding (create)
 
 
-index :: Controller
-index m = liftIO . render "Game/index" . (<!>) $ Map' "url" m 
-
-begin :: Controller
-begin m = do userID <- getCookie "userID"
-             user <- getUser userID
-             opponent <- getUser . read $ m!"opponent"
-             game <- Game.begin user opponent
-             setCookie "gameID" $ gID game
-             let info = Map' "game" game
-                     <*> List "board" (board game)
-                     <+> Map' "state" (gState game)
-                     <+> Map' "user" user
-             liftIO $ render "Game/board" info
+create :: Controller
+create m = do userID <- getCookie "user"
+              user <- getUser userID
+              opponent <- getUser . read $ m!"opponent"
+              game <- Game.create user opponent
+              setCookie "game" $ gID game
+              liftIO $ render "Game/create" empty
 
 play :: Controller
-play m  = liftIO . render "Game/index" . (<!>) $ Map' "url" m 
+play m = do userID <- getCookie "user"
+            gameID <- getCookie "game"
+            user <- getUser userID
+            game <- getGame gameID
+            let game' = apply game user
+                info = Map' "game" game'
+                    <*> List "board" (board game)
+                    <+> Map' "user" user
+            liftIO $ render "Game/play" info
 
-get :: Controller
-get m   = liftIO . render "Game/index" . (<!>) $ Map' "url" m 
+update :: Controller
+update m = do userID <- getCookie "user"
+              gameID <- getCookie "game"
+              user <- getUser userID
+              game <- getGame gameID
+              let game' = apply game user
+                  info = Map' "game" game'
+                      <*> List "board" (board game)
+                      <+> Map' "user" user
+                      <+> List "available" (available game)
+                      <+> Map' "state" (gState game)
+              liftIO $ render "Game/update" info
 
-end :: Controller
-end m   = liftIO . render "Game/index" . (<!>) $ Map' "url" m 
 
--- liftIO . putStrLn $ (show user) ++ " " ++ (show m)
+-- debug -- liftIO . putStrLn $ (show user) ++ " " ++ (show m)

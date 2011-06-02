@@ -22,7 +22,7 @@ newtype GameRepo = GameRepo (Map Int Game)
 addGame :: GameState -> User -> User -> Update GameRepo Game
 addGame gs b w = do GameRepo r <- get
                     let id = (size r) + 1
-                        g = Game gs b w id
+                        g = Game gs b w b id
                     put . GameRepo . insert id g $ r
                     return g
 

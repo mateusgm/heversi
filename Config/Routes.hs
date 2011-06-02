@@ -7,13 +7,8 @@ import Controllers.Home    as Home
 
 routes = [GETs  ""            Home.index ,
           POSTs "start"       Home.start ,
-          GETs  "game"        Game.index ,
-          POSTs "game/begin"  Game.begin ,
-          POSTs  "game/play"   Game.play  ,
-          GETl  "game/get"    Game.get   ,
-          GETl  "game/end"    Game.end   ]
---          GETs  "chat"        Chat.index ,
---          POSTl "chat/send"   Chat.send  ,
---          GETl  "chat/get"    Chat.get   ]
+          POSTs "game/create" Game.create,
+          GETs  "game/play"   Game.play  ,
+          POSTs "game/update" Game.update]
     
 
