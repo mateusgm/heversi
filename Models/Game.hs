@@ -1,84 +1,74 @@
+{-# OPTIONS_GHC -XFlexibleInstances -XTypeSynonymInstances #-}
+{-# LANGUAGE DeriveDataTypeable #-}
 module Models.Game
-   (module Models.Types,
+   (module Models.Game.Engine,
+    module Models.Game.Board,
+    module Models.Game.Stone,
     module Models.Game
    )where
 
-import System.State
+import Data.Data           (Data, Typeable)
 import System.Templates
 
-import Models.Types
-import qualified Models.Game.Engine as Engine (play, playAI, turn)
-import Models.Game.Engine hiding (play, playAI, turn)
-import Models.Repo.Game
-import Control.Monad.Trans
+import Models.Game.Engine
+import Models.Game.Board
+import Models.Game.Stone
+import Models.Game.AI
+import Models.User
 
 
-create :: User -> User -> ServerPart Game
-create u1 u2 = do game <- update $ AddGame start u1 u2
-                  return game
+data Game = Game { gState :: GameState,
+                   gTurn :: User,
+                   gIdle :: User,
+                   gID :: Int }
+            deriving (Eq, Typeable, Data, Show)
 
-getGame :: Int -> ServerPart Game
-getGame id = do game <- query $ GetGame id
-                return game
- 
-play :: Game -> User ->  Move -> ServerPart Game
-play game@(Game state turn idle owner id) user m
-   | user /= turn = return game
-   | otherwise    = do let state' = Engine.play state m
-                           (turn', idle') = vez game state'
-                           game' = Game state' turn' idle' owner id
-                       update $ SaveGame game'
-                       return game'
+create' :: User -> User -> Int -> Game
+create' u1 u2 id = Game start u1 u2 id
+
+play' :: Game -> User ->  Move -> Game
+play' game@(Game state turn idle id) user m@(ps,pl)
+   | user /= turn = game
+   | otherwise    = Game state' turn' idle' id
+   where state' = if (isHuman user) then play'' state m
+                  else play'' state . move (sBoard state) $ pl
+         (turn', idle') = vez game state'
 
 vez :: Game -> GameState -> (User,User)
-vez game@(Game _ turn idle _ _) state'
-   | (player turn game) == Engine.turn state' = (turn, idle)
-   | otherwise = (idle, turn)
+vez g@(Game _ t i _) state'
+   | stone t g == turn state' = (t, i)
+   | otherwise                = (i, t)
 
-playAI :: Game -> ServerPart Game
-playAI game@(Game state turn idle owner id)
-   | isHuman turn = return game
-   | otherwise = do let state' = Engine.playAI state
-                        (turn', idle') = vez game state'
-                        game' = Game state' turn' idle' owner id
-                    update $ SaveGame game'
-                    return game'
-
-
-board :: Game -> [(Position, Player)]
+board :: Game -> [(Position, Stone)]
 board = toList . sBoard . gState
 
-apply :: Game -> User -> Game
-apply g@(Game s t i o id) user
-   | user == t  = g
-   | otherwise  = Game s i t o id
-
-player :: User -> Game -> Player
-player user game
-   | user == gOwner game = mkBlack
-   | otherwise           = mkWhite
+stone :: User -> Game -> Stone
+stone user game
+   | user == gTurn game = turn . gState $ game
+   | otherwise          = idle . gState $ game
 
 available :: Game -> [Position] 
-available g = prospects (sBoard . gState $ g) . player (gTurn g) $ g
+available g = prospects (sBoard . gState $ g) . stone (gTurn g) $ g
 
 
 -- template instances
 
 instance Infoable Game where
-   toMap g = insert "opponent" (show . uID . gIdle $ g)
-           . insert "stone" (show . player (gTurn g) $ g)
+   toMap g = insert "turn" (show . uID . gTurn $ g)
+           . insert "idle" (show . uID . gIdle $ g)
            . singleton "id" . show $ gID g
 
 instance Infoable GameState where
    toMap s = insert "turn" (show . sTurn $ s)
-           . insert "white" (show . count (sBoard s) $ mkWhite)
-           . singleton "black" . show . count (sBoard s) $ mkBlack
+           . insert "idle" (show . sIdle $ s)
+           . insert "white" (show . count (sBoard s) $ white)
+           . singleton "black" . show . count (sBoard s) $ black
 
 instance Infoable Position where
    toMap (y,x) = insert "x" (show x)
                  . singleton "y" $ show y
 
-instance Infoable (Position, Player) where
+instance Infoable (Position, Stone) where
    toMap (ps,pl) = insert "player" (show pl)
                  . toMap $ ps
 

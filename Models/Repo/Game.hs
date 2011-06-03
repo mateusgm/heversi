@@ -1,15 +1,10 @@
+{-# OPTIONS_GHC -XFlexibleInstances -XTypeSynonymInstances #-}
 {-# LANGUAGE DeriveDataTypeable, FlexibleContexts, 
              GeneralizedNewtypeDeriving, MultiParamTypeClasses,
              TemplateHaskell, TypeFamilies #-}
-
 module Models.Repo.Game where
   
-import Models.Types
-
-import Data.Data              (Data, Typeable)
-import Data.Map               (size, insert, (!), empty, update, member)
-import Control.Monad.Reader   (ask)
-import Control.Monad.State    (get, put)
+import Models.Repo.Types
 
 
 -- data type
@@ -19,12 +14,12 @@ newtype GameRepo = GameRepo (Map Int Game)
 
 -- the operations
 
-addGame :: GameState -> User -> User -> Update GameRepo Game
-addGame gs b w = do GameRepo r <- get
-                    let id = (size r) + 1
-                        g = Game gs b w b id
-                    put . GameRepo . insert id g $ r
-                    return g
+addGame :: User -> User -> Update GameRepo Game
+addGame u1 u2 = do GameRepo r <- get
+                   let id = (size r) + 1
+                       g = create' u1 u2 id
+                   put . GameRepo . insert id g $ r
+                   return g
 
 saveGame :: Game -> Update GameRepo ()
 saveGame g = do GameRepo r <- get

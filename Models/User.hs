@@ -1,27 +1,30 @@
-module Models.User
-   (module Models.Types,
-    module Models.User
-   )where
+{-# LANGUAGE DeriveDataTypeable #-}
+module Models.User where
+
   
-import System.State
 import System.Templates
+import Data.Data           (Data, Typeable)
 
-import Models.Types        (User(..), uID)
-import Models.Repo.User
 
-addUser :: String -> ServerPart User
-addUser name = do user <- update $ AddUser name
-                  return user
+data User = Android |
+            Human String Int 
+            deriving (Eq, Typeable, Data, Show)
 
-getUser :: Int -> ServerPart User
-getUser id
-   | id == 0   = return Android
-   | otherwise = do user <- query $ GetUser id
-                    return user
 
-getLogged :: ServerPart [User]
-getLogged = do users <- query $ GetUsers 
-               return users
+human n i = Human n i
+android = Android
+
+isHuman Android = False
+isHuman (Human _ _) = True
+isAndroid = not . isHuman
+
+uID :: User -> Int
+uID Android     = 0
+uID (Human _ i) = i
+
+create :: String -> Int -> User
+create name id = human name id
+
 
 instance Infoable User where
    toMap (Human name id) = insert "name" name

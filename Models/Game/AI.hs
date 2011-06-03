@@ -1,10 +1,11 @@
-module Models.Game.AI     (move)
-  where
+module Models.Game.AI (
+      move
+   ) where
 
-import Models.Game.Board   (Board, Move, prospects)  
-import Models.Game.Player  (Player)
+import Models.Game.Board 
+import Models.Game.Stone
 
-move :: Board -> Player -> Move
+move :: Board -> Stone -> Move
 move b s = (head $ prospects b s, s)
 
 

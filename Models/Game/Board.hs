@@ -1,16 +1,22 @@
-module Models.Game.Board    (Position, Move, Flip, Board, board, 
-                             count, flip, flips, prospects, out)
-  where
+module Models.Game.Board (
+      Board, Position, Move,
+      startBoard, count, flip, flips, prospects, out
+   ) where
 
-import Debug.Trace
+import Models.Game.Stone
+
 import Prelude               hiding (flip, filter)
 import Data.Array           (range)
-import Data.Map             (update, fromList, (!), size, 
+import Data.Map             (Map, update, fromList, (!), size, 
                              findMin, findMax, keys, filter)
 
-import Models.Types         (Board, Move, Flip, Position, Direction) 
-import Models.Game.Player   (Player, black, white, none,
-                             mkWhite, mkBlack, mkNone)
+
+type Position  = (Integer,  Integer)
+type Direction = (Integer,  Integer)
+type Move      = (Position, Stone)
+type Flip      = Move
+
+type Board     = Map Position Stone
 
 
 -- =============== Low Level Operations =============== --
@@ -18,9 +24,9 @@ import Models.Game.Player   (Player, black, white, none,
 -- constants
 _bounds = ((1,1),(8,8))
 _range  = range _bounds
-_empty  = [((i,j),mkNone) | (i,j) <- _range]
+_empty  = [((i,j),none) | (i,j) <- _range]
 _flips  = [((4,4),b),((4,5),w),((5,4),w), ((5,5),b)]
-  where (w,b) = (mkWhite, mkBlack)
+  where (w,b) = (white, black)
 
 -- update a given position of a board with a new stone
 update' :: Move -> Board -> Board
@@ -28,24 +34,24 @@ update' (p,s) b = update (choose s) p b
   where choose s' _ = Just s'
 
 -- update the board according to the given moves
-updates :: Board -> [Move] ->Board
+updates :: Board -> [Move] -> Board
 updates b ms = foldr update' b ms
 
 -- get the initial board
-board :: Board
-board = updates (fromList _empty) _flips
+startBoard :: Board
+startBoard = updates (fromList _empty) _flips
 
--- get the player that owns a given position on the board
-player :: Board -> Position -> Player
-player b p = b!p
+-- get the stone that owns a given position on the board
+stone :: Board -> Position -> Stone
+stone b p = b!p
 
--- get the score of a given player on the board
-count :: Board -> Player -> Int
+-- get the score of a given stone on the board
+count :: Board -> Stone -> Int
 count b s = size . filter (== s) $ b
 
 -- check if a given position on the board is empty
 empty :: Board -> Position -> Bool
-empty b = none . player b
+empty b = isNone . stone b
 
 -- check if position is out of the range of the board
 out :: Board -> Position -> Bool
@@ -66,7 +72,7 @@ direction :: Board -> Direction -> Position -> [Move]
 direction b (di,dj) (i,j)
   | not . out b $ (i,j) = current : direction b (di,dj) (i+di,j+dj) 
   | otherwise           = []
-  where current = ((i,j), player b (i,j))
+  where current = ((i,j), stone b (i,j))
 
 
 -- =============== High Level operations =============== --
@@ -88,13 +94,13 @@ flipsDir b (p,s) d
         direction'      = tail . direction b d
         affected a []   = []
         affected a (x:xs)
-          | none s'     = []
+          | isNone s'   = []
           | s == s'     = if (null a) then [] else (p,s):a
           | otherwise   = affected ((p',s):a) xs 
           where (p',s') = x
 
--- get the possible moves for the given player on the board   
-prospects :: Board -> Player -> [Position]
+-- get the possible moves for the given stone on the board   
+prospects :: Board -> Stone -> [Position]
 prospects b s = [ p | p <- keys b,
                   not . null . flips b $ (p,s) ]
 

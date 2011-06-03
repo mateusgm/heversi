@@ -1,13 +1,14 @@
 {
    "state": {
       "turn": "$state.turn$",
+      "idle": "$state.idle$",      
       "black": $state.black$,
       "white": $state.white$
       },
    "game": {
       "id": $game.id$,
-      "stone": "$game.stone$",
-      "opponent": $game.opponent$     
+      "turn": $game.turn$,
+      "idle": $game.idle$     
       },
    "board": {
       $board:board_json()$

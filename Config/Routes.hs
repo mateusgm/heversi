@@ -11,7 +11,6 @@ routes = [GETs  ""            Home.index ,
           POSTs "game/create" Game.create,
           GETs  "game/play"   Game.play  ,
           GETs  "game/get"    Game.get  ,          
-          POSTs "game/update" Game.update,
-          GETs  "game/ai"     Game.ai]
+          POSTs "game/update" Game.update]
     
 

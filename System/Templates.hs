@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -XFlexibleInstances -XTypeSynonymInstances #-}
+
 module System.Templates
    (Info(..), Infoable(..), render, render', (<+>), (<*>), (<!>),
     module Data.Map

@@ -1,20 +1,19 @@
 module Controllers.Game
-   (create, play, update, get, index, ai
+   (create, play, update, get, index
    )where
 
 import System.Routes
 import System.Templates
 import System.Cookies
 
-import Models.User
-import qualified Models.Game as Game (create, play, playAI)
-import Models.Game hiding (create, play, playAI)
+import qualified Adaptors.User as User
+import qualified Adaptors.Game as Game
 
 
 index :: Controller
 index m = do userID <- getCookie "user"
-             user <- getUser userID
-             logged <- getLogged
+             user <- User.get userID
+             logged <- User.getLogged
              let info = List "logged" logged 
                      <*> Map' "user" user
              liftIO $ render "Game/index" info
@@ -22,59 +21,43 @@ index m = do userID <- getCookie "user"
 
 create :: Controller
 create m = do userID <- getCookie "user"
-              user <- getUser userID
+              user <- User.get userID
               let opponent = read $ m!"opponent"
-              opponent' <- getUser opponent
+              opponent' <- User.get opponent
               game <- Game.create user opponent' 
-              setCookie "game" $ gID game
+              setCookie "game" $ Game.gID game
               liftIO $ render "" empty
 
 play :: Controller
 play m = do userID <- getCookie "user"
             gameID <- getCookie "game"
-            user <- getUser userID
-            game <- getGame gameID
-            let game' = apply game user
-                info = Map' "game" game'
-                    <*> List "board" (board game)
+            user <- User.get userID
+            game <- Game.get gameID
+            let info = Map' "game" game
+                    <*> List "board" (Game.board game)
                     <+> Map' "user" user
             liftIO $ render "Game/play" info
 
 get :: Controller
-get m = do userID <- getCookie "user"
-           gameID <- getCookie "game"
-           user <- getUser userID
-           game <- getGame gameID
-           let game' = apply game user
-               info = Map' "game" game'
-                   <*> List "board" (board game)
-                   <+> List "available" (available game)
-                   <+> Map' "state" (gState game)
+get m = do gameID <- getCookie "game"
+           game <- Game.get gameID
+           let info = Map' "game" game
+                   <*> List "board" (Game.board game)
+                   <+> List "available" (Game.available game)
+                   <+> Map' "state" (Game.gState game)
            liftIO $ render "Game/update" info
 
 update :: Controller
-update m = do userID <- getCookie "user"
-              gameID <- getCookie "game"
-              user <- getUser userID
-              game <- getGame gameID
-              let move = ((read $ m!"y", read $ m!"x"),read $ m!"player")
+update m = do gameID <- getCookie "game"
+              game <- Game.get gameID
+              user <- User.get . read $ m!"user"
+              let move = ((read $ m!"y", read $ m!"x"), read $ m!"player")
               game' <- Game.play game user move                        
-              let game'' = apply game' user
-                  info = Map' "game" game''
-                      <*> List "board" (board game')
-                      <+> List "available" (available game')
-                      <+> Map' "state" (gState game')
+              let info = Map' "game" game'
+                      <*> List "board" (Game.board game')
+                      <+> List "available" (Game.available game')
+                      <+> Map' "state" (Game.gState game')
               liftIO $ render "Game/update" info
-
-ai :: Controller
-ai m = do gameID <- getCookie "game"
-          game <- getGame gameID
-          game' <- Game.playAI game                       
-          let info = Map' "game" game'
-                  <*> List "board" (board game')
-                  <+> List "available" (available game')
-                  <+> Map' "state" (gState game')
-          liftIO $ render "Game/update" info
 
 -- debug -- liftIO . putStrLn $ (show user) ++ " " ++ (show m)
 

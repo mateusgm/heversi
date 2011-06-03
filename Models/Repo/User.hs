@@ -1,15 +1,10 @@
+{-# OPTIONS_GHC -XFlexibleInstances -XTypeSynonymInstances #-}
 {-# LANGUAGE DeriveDataTypeable, FlexibleContexts, 
              GeneralizedNewtypeDeriving, MultiParamTypeClasses,
              TemplateHaskell, TypeFamilies #-}
-
 module Models.Repo.User where
   
-import Models.Types
-
-import Data.Data              (Data, Typeable)
-import Data.Map               (size, insert, (!), empty, toList)
-import Control.Monad.Reader   (ask)
-import Control.Monad.State    (get, put)
+import Models.Repo.Types
 
 
 -- data type
@@ -22,7 +17,7 @@ newtype UserRepo = UserRepo (Map Int User)
 addUser :: String -> Update UserRepo User
 addUser n = do UserRepo r <- get
                let id = (size r) + 1
-                   u = Human n id
+                   u = create n id
                put . UserRepo . insert id u $ r
                return u
 
