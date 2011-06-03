@@ -5,7 +5,7 @@
 
    function setUpdates(time) {
       update();
-      //setInterval(update, time);
+      setInterval(update, time);
    }
 
    function play(x,y) {
@@ -49,14 +49,13 @@
       }
 
       $('.position').each(makeNotAvailable);
-      if (updates.game.stone == updates.state.turn
-           && updates.available) {
-         $.each(updates.available, makeAvailable);
+      if (updates.available) {
+         $.each(updates.available, makeAvailable(updates.game.stone == updates.state.turn));
       }
       
       if (updates.game.stone != updates.state.turn
            && updates.game.opponent == 0) {
-         setTimeout(aiUpdate, 1000);               
+         setTimeout(aiUpdate, 2000);               
       }
    }
    
@@ -67,15 +66,15 @@
    }
  
    function makeNotAvailable (index, element) {
-      $(element).text(function() {
-         return '';
-      });
+      $(element).html('');
    }
    
-   function makeAvailable (index, value) {
-      var onclick = 'play(' + value.x + ',' + value.y + ');';
-      var link = '<a href="javascript:void(0);" onclick="' + onclick + '"></a>';
-      $('#position-' + value.x + value.y).html(link);
+   function makeAvailable(turn) { 
+      return function (index, value) {
+         var onclick = 'play(' + value.x + ',' + value.y + ');';
+         var link = turn ? '<a href="javascript:void(0);" onclick="' + onclick + '"></a>' : '';
+         var div = '<div class="available">' + link + '</div>'; 
+         $('#position-' + value.x + value.y).html(div);
+      }
    }
-   
 

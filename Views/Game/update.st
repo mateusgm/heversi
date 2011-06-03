@@ -4,10 +4,6 @@
       "black": $state.black$,
       "white": $state.white$
       },
-   "user": {
-      "id": $user.id$,
-      "name": "$user.name$"
-      },
    "game": {
       "id": $game.id$,
       "stone": "$game.stone$",

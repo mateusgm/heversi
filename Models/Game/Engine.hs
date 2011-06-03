@@ -1,12 +1,13 @@
 module Models.Game.Engine
    (module Models.Game.Player,
     module Models.Game.Board,
-    GameState(..), start, play
+    GameState(..), start, play, playAI, turn
    ) where
 
 import Prelude                 hiding (flip)
 
 import Models.Types           (GameState(..)) 
+import Models.Game.AI         (move)
 import Models.Game.Player     (white, mkWhite, mkBlack)
 import Models.Game.Board      (Move, board, count, prospects,
                                flips, flip)
@@ -14,6 +15,11 @@ import Models.Game.Board      (Move, board, count, prospects,
 
 -- begin a match between two players
 start = Play board mkBlack mkWhite
+
+turn g@(Play _ t _) = t
+
+playAI :: GameState -> GameState
+playAI s@(Play b t i) = play s . move b $ t 
 
 -- play a move in a GameState
 play :: GameState -> Move -> GameState

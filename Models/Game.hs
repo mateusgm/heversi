@@ -7,8 +7,8 @@ import System.State
 import System.Templates
 
 import Models.Types
-import qualified Models.Game.Engine as Engine (play)
-import Models.Game.Engine hiding (play)
+import qualified Models.Game.Engine as Engine (play, playAI, turn)
+import Models.Game.Engine hiding (play, playAI, turn)
 import Models.Repo.Game
 import Control.Monad.Trans
 
@@ -24,10 +24,26 @@ getGame id = do game <- query $ GetGame id
 play :: Game -> User ->  Move -> ServerPart Game
 play game@(Game state turn idle owner id) user m
    | user /= turn = return game
-   | otherwise    = do let state' = Engine.play state m 
-                           game' = Game state' idle turn owner id
+   | otherwise    = do let state' = Engine.play state m
+                           (turn', idle') = vez game state'
+                           game' = Game state' turn' idle' owner id
                        update $ SaveGame game'
                        return game'
+
+vez :: Game -> GameState -> (User,User)
+vez game@(Game _ turn idle _ _) state'
+   | (player turn game) == Engine.turn state' = (turn, idle)
+   | otherwise = (idle, turn)
+
+playAI :: Game -> ServerPart Game
+playAI game@(Game state turn idle owner id)
+   | isHuman turn = return game
+   | otherwise = do let state' = Engine.playAI state
+                        (turn', idle') = vez game state'
+                        game' = Game state' turn' idle' owner id
+                    update $ SaveGame game'
+                    return game'
+
 
 board :: Game -> [(Position, Player)]
 board = toList . sBoard . gState

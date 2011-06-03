@@ -70,9 +70,14 @@ $(deriveSerialize ''GameState)
 -- ==================   the User    ================== --
 
 data User = Android |
-            Human { uName :: String,
-                    uID :: Int } 
+            Human String Int 
             deriving (Eq, Typeable, Data, Show)
+
+isHuman Android = False
+isHuman (Human _ _) = True
+
+uID Android = 0
+uID (Human _ i) = i
 
 instance Version User
 $(deriveSerialize ''User)
