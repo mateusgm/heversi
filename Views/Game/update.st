@@ -14,11 +14,11 @@
       "opponent": $game.opponent$     
       },
    "board": {
-      $board:board_list()$
+      $board:board_json()$
       "nenhum": ""
       },
    "available": [
-      $available:available_list()$
+      $available:available_json()$
       {"nenhum": ""}
    ]
 }

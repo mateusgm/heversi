@@ -1,6 +1,7 @@
 
    var getURL = '/game/get';
    var updateURL = '/game/update';
+   var aiURL = '/game/ai';
 
    function setUpdates(time) {
       update();
@@ -13,8 +14,11 @@
    }
    
    function update() {
-      console.log('update!');
       $.get(getURL, updateGame);
+   }
+   
+   function aiUpdate() {
+      $.get(aiURL, updateGame);   
    }
    
    function setPosition(x,y) {
@@ -48,7 +52,12 @@
       if (updates.game.stone == updates.state.turn
            && updates.available) {
          $.each(updates.available, makeAvailable);
-      }     
+      }
+      
+      if (updates.game.stone != updates.state.turn
+           && updates.game.opponent == 0) {
+         setTimeout(aiUpdate, 1000);               
+      }
    }
    
    function updatePosition(index, value) {
