@@ -8,6 +8,7 @@
     <script type="text/javascript" src="/scripts/jquery-1.6.1.min.js"></script>
     <script type="text/javascript" src="/scripts/play.js"></script>
     <script type="text/javascript" src="/scripts/create.js"></script>
+    <script type="text/javascript" src="/scripts/join.js"></script>
   </head>
   <body>
   

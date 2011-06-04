@@ -3,6 +3,9 @@ $ header() $
    <script>
       var target = '/game/play';
       \$(document).ready(setFormHandler(target));
+      
+      var time = 1000;
+      \$(document).ready(setJoinCheck(target, time));
    </script>
 
   <p>Olá, $user.name$!</p>

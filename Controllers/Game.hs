@@ -59,5 +59,14 @@ update m = do gameID <- getCookie "game"
                       <+> Map' "state" (Game.gState game')
               liftIO $ render "Game/update" info
 
+check :: Controller
+create m = do userID <- getCookie "user"
+              user <- User.get userID
+              let opponent = read $ m!"opponent"
+              opponent' <- User.get opponent
+              game <- Game.create user opponent' 
+              setCookie "game" $ Game.gID game
+              liftIO $ render "" empty
+
 -- debug -- liftIO . putStrLn $ (show user) ++ " " ++ (show m)
 
