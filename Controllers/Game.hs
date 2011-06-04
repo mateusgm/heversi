@@ -1,5 +1,5 @@
 module Controllers.Game
-   (create, play, update, get, index
+   (create, play, update, get, index, check
    )where
 
 import System.Routes
@@ -60,13 +60,11 @@ update m = do gameID <- getCookie "game"
               liftIO $ render "Game/update" info
 
 check :: Controller
-create m = do userID <- getCookie "user"
-              user <- User.get userID
-              let opponent = read $ m!"opponent"
-              opponent' <- User.get opponent
-              game <- Game.create user opponent' 
-              setCookie "game" $ Game.gID game
-              liftIO $ render "" empty
+check m = do userID <- getCookie "user"
+             user <- User.get userID
+             game <- Game.check user
+             setCookie "game" $ Game.gID game
+             liftIO $ render "" empty
 
 -- debug -- liftIO . putStrLn $ (show user) ++ " " ++ (show m)
 

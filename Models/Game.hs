@@ -50,6 +50,12 @@ stone user game
 available :: Game -> [Position] 
 available g = prospects (sBoard . gState $ g) . stone (gTurn g) $ g
 
+checkUser :: User -> Game -> Bool
+checkUser u (Game _ u1 u2 _)
+   | u == u2   = True
+   | u == u1   = True
+   | otherwise = False
+
 
 -- template instances
 

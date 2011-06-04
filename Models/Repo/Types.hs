@@ -17,7 +17,7 @@ import Models.User
 
 import Data.Data              (Data, Typeable)
 import Data.Map               (Map, size, insert, (!), empty,
-                               toList, update, member)
+                               toList, update, member, filter, findMax)
 import Happstack.State        (Component(..), End, Version, Query,
                                Update, deriveSerialize, mkMethods)
 import Control.Monad.Reader   (ask)

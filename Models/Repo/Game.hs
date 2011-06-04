@@ -5,7 +5,7 @@
 module Models.Repo.Game where
   
 import Models.Repo.Types
-
+import Prelude hiding (filter)
 
 -- data type
 
@@ -31,6 +31,11 @@ getGame :: Int -> Query GameRepo Game
 getGame id = do GameRepo dir <- ask
                 return $ dir!id
 
+getUserGame :: User -> Query GameRepo Game
+getUserGame u = do GameRepo dir <- ask
+                   return . snd . findMax . filter (checkUser u) $ dir
+
+
 -- the automagic
 
 instance Version GameRepo
@@ -40,5 +45,5 @@ instance Component GameRepo where
   type Dependencies GameRepo = End
   initialValue = GameRepo empty  
 
-$(mkMethods ''GameRepo ['addGame, 'getGame,'saveGame])
+$(mkMethods ''GameRepo ['addGame, 'getGame,'saveGame,'getUserGame])
 

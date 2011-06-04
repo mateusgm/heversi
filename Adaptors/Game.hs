@@ -18,6 +18,10 @@ get :: Int -> ServerPart Game
 get id = do game <- query $ GetGame id
             return game
  
+check :: User -> ServerPart Game
+check u = do game <- query $ GetUserGame u
+             return game
+ 
 play :: Game -> User ->  Move -> ServerPart Game
 play game user move
    | game == game' = return game
