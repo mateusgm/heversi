@@ -85,6 +85,11 @@ a {
    width: 46px;
    height: 46px;
    display: block;
+   background: red;
+   opacity: 0.25;
+}
+
+.turn .available {
    background: black;
    opacity: 0.25;
 }

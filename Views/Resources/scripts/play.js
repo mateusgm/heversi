@@ -1,6 +1,8 @@
 
    var getURL = '/game/get';
    var updateURL = '/game/update';
+   var aiTime = '500';
+   
    var userID = 0; 
    var stones = new Array();
 
@@ -48,6 +50,7 @@
    function updateGame(data) {
       console.log(data);
       var updates = $.parseJSON(data);
+      var isTurn = stones[userID] == updates.state.turn;
       
       if (stones.length == 0) {
          stones[updates.game.turn] = updates.state.turn;
@@ -62,19 +65,18 @@
       var positions = $('.position');
       if (updates.board) {
          positions.each(
-            updatePosition(updates.board)
+            updatePosition(updates.board, isTurn)
          );
       }
     
       if (updates.available) {
-         var isTurn = stones[userID] == updates.state.turn;
          positions.each(
             updateAvailability(updates.available, isTurn)
          );
       }
       
       if (updates.game.turn == 0) {
-         setTimeout(aiUpdate, 2000);           
+         setTimeout(aiUpdate, aiTime);           
       }
       
    }
@@ -98,11 +100,13 @@
       $('#white').html(white);   
    }
    
-   function updatePosition (board) {
+   function updatePosition (board, isTurn) {
       return function(index, element) {
          var id = $(element).attr('id');
-         $(element).removeClass('stone-o stone-x stone--')
-            .addClass('stone-' + board[id]);
+         var add = 'stone-' + board[id];
+         if (isTurn) add = add + ' turn';
+         $(element).removeClass('stone-o stone-x stone-- turn')
+            .addClass(add);
       }
    }
    
@@ -113,7 +117,7 @@
          var index = $.inArray(id, availables);
          if (index == -1) {
             if (element.html()) element.html('');
-         } else if (!element.html()) {
+         } else if (!element.children().html()) {
             var y = availables[index].charAt(0);
             var x = availables[index].charAt(1);
             var onclick = 'play(' + y + ',' + x + ');';

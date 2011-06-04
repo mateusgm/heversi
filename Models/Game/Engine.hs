@@ -41,7 +41,7 @@ play'' g@(Draw _) _       = g
 play'' g@(Play b t i) m@(_,s)
   | t /= s              = g
   | valid m             = g 
-  | blocked i           = if (blocked t) then (over g) else (game t i) 
+  | blocked i           = if (blocked t) then (over g board') else (game t i) 
   | otherwise           = game i t
   where flips'  = flips b
         valid   = null . flips'
@@ -50,10 +50,10 @@ play'' g@(Play b t i) m@(_,s)
         game    = Play board'
         
 -- end a match
-over :: GameState -> GameState
-over g@(Over _ _ _) = g
-over g@(Draw _)     = g
-over g@(Play b t i)
+over :: GameState -> Board -> GameState
+over g@(Over _ _ _) _ = g
+over g@(Draw _) _     = g
+over g@(Play _ t i) b
   | count' wh > count' bl = Over b wh bl
   | count' wh < count' bl = Over b bl wh
   | otherwise             = Draw b
