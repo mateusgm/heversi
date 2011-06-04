@@ -1,1 +1,1 @@
-"$it.x$$it.y$": "$it.player$",
+"$it.y$$it.x$": "$it.player$",

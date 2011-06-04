@@ -22,9 +22,17 @@ data GameState = Play { sBoard :: Board,
 -- begin a match between two players
 start = Play startBoard black white
 
-turn g@(Play _ x _) = x
-idle g@(Play _ _ x) = x
+turn (Play _ x _) = x
+turn (Over _ x _) = x
+turn (Draw _)     = black
 
+idle (Play _ _ x) = x
+idle (Over _ _ x) = x
+idle (Draw _)     = white
+
+status (Play _ _ _) = "play"
+status (Over _ _ _) = "over"
+status (Draw _)     = "draw"
 
 -- play a move in a GameState
 play'' :: GameState -> Move -> GameState

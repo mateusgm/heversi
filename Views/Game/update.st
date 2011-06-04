@@ -1,7 +1,8 @@
 {
    "state": {
       "turn": "$state.turn$",
-      "idle": "$state.idle$",      
+      "idle": "$state.idle$", 
+      "status": "$state.status$",     
       "black": $state.black$,
       "white": $state.white$
       },
@@ -16,6 +17,6 @@
       },
    "available": [
       $available:available_json()$
-      {"nenhum": ""}
+      "0"
    ]
 }

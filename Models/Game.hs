@@ -59,16 +59,17 @@ instance Infoable Game where
            . singleton "id" . show $ gID g
 
 instance Infoable GameState where
-   toMap s = insert "turn" (show . sTurn $ s)
-           . insert "idle" (show . sIdle $ s)
+   toMap s = insert "turn" (show . turn $ s)
+           . insert "idle" (show . idle $ s)
+           . insert "status" (status s)
            . insert "white" (show . count (sBoard s) $ white)
            . singleton "black" . show . count (sBoard s) $ black
 
 instance Infoable Position where
-   toMap (y,x) = insert "x" (show x)
-                 . singleton "y" $ show y
+   toMap (y,x) = singleton "id" $ (show y) ++ (show x)
 
 instance Infoable (Position, Stone) where
-   toMap (ps,pl) = insert "player" (show pl)
-                 . toMap $ ps
+   toMap ((y,x),pl) = insert "player" (show pl)
+                    . insert "y" (show y)
+                    . singleton "x" $ show x
 
