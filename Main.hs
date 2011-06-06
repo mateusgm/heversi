@@ -9,5 +9,5 @@ main :: IO ()
 main = startApp 
 
 startApp :: IO ()
-startApp = bracket state checkAndShut $ server routes   
-     
+startApp = bracket state checkAndShut $ server routes
+
