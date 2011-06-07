@@ -2,14 +2,17 @@
    var getURL = '/game/get';
    var updateURL = '/game/update';
    var aiTime = '500';
+   var aiID = 0;
    
    var userID = 0; 
    var stones = new Array();
 
    function setUpdates(time) {
-      init();
-      update();
-      setInterval(update, time);
+      return function() {
+         init();
+         update();
+         setInterval(update, time);
+      }
    }
    
    function init() {
@@ -28,7 +31,7 @@
   
    function aiUpdate() {
       setPosition(0,0);
-      setPlayer(0);
+      setPlayer(aiID);
       makeMove();
    }
    
@@ -48,14 +51,15 @@
    }
    
    function updateGame(data) {
-      console.log(data);
+//      console.log(data);
       var updates = $.parseJSON(data);
-      var isTurn = stones[userID] == updates.state.turn;
       
       if (stones.length == 0) {
          stones[updates.game.turn] = updates.state.turn;
          stones[updates.game.idle] = updates.state.idle;
       }
+      
+      var isTurn = stones[userID] == updates.state.turn;
       
       if (updates.state) {
          updateCount(updates.state.black, updates.state.white);
@@ -75,8 +79,8 @@
          );
       }
       
-      if (updates.game.turn == 0) {
-         setTimeout(aiUpdate, aiTime);           
+      if (updates.game.turn == aiID) {
+         setTimeout(aiUpdate, aiTime);
       }
       
    }

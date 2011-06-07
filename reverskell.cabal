@@ -1,5 +1,5 @@
-Name:                ReversKell
-Version:             0.0
+Name:                reverskell
+Version:             0.9
 Synopsis:            A Haskell web implementation of Reversi.
 Description:
   A Haskell web implementation of Reversi using the web framework HappStack.
@@ -20,6 +20,6 @@ Executable reverskell
                      utf8-string>= 0.3,
                      bytestring >= 0.9,
                      array >= 0.3
-   ghc-options:      -threaded
+   ghc-options:      -threaded -rtsopts
   
 -- reference: http://www.haskell.org/haskellwiki/How_to_write_a_Haskell_program , MissingH >= 1.1
