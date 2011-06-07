@@ -8,7 +8,7 @@ import System.Cookies
 
 import qualified Adaptors.User as User
 import qualified Adaptors.Game as Game
-
+import Data.Maybe (isJust, fromJust)
 
 index :: Controller
 index m = do userID <- getCookie "user"
@@ -63,8 +63,10 @@ check :: Controller
 check m = do userID <- getCookie "user"
              user <- User.get userID
              game <- Game.check user
-             setCookie "game" $ Game.gID game
-             liftIO $ render "" empty
+             if (isJust game)
+               then do setCookie "game" . Game.gID $ fromJust game
+                       liftIO $ render "" empty
+               else notFound . toResponse $ ""
 
 -- debug -- liftIO . putStrLn $ (show user) ++ " " ++ (show m)
 

@@ -13,7 +13,7 @@
  
    function joinGame(target) {
       return function () {
-         window.location.href = target;      
+         window.location.href = target;
       }   
    }
 

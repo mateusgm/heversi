@@ -1,3 +1,5 @@
+all: clean build install run 
+
 run:
 	reverskell +RTS -A4M -N4 -qg0 -qb -g1 &
 
@@ -17,4 +19,8 @@ build:
 
 install:
 	runhaskell Setup.hs install
+
+clean:
+	rm -rf ~/.cabal/bin/reverskell dist/build dist/src
+
 

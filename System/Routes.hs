@@ -10,7 +10,7 @@ module System.Routes
    ) where
 
 import Data.Map                 (Map, (!))
-import Happstack.Server         (ServerPart, Response)
+import Happstack.Server         (ServerPart, Response, notFound, toResponse)
 import Control.Monad.Trans      (liftIO)
 
 data Matching       = Strict | Loose

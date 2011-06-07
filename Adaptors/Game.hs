@@ -18,7 +18,7 @@ get :: Int -> ServerPart Game
 get id = do game <- query $ GetGame id
             return game
  
-check :: User -> ServerPart Game
+check :: User -> ServerPart (Maybe Game)
 check u = do game <- query $ GetUserGame u
              return game
  

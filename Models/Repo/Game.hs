@@ -5,7 +5,7 @@
 module Models.Repo.Game where
   
 import Models.Repo.Types
-import Prelude hiding (filter)
+import Prelude hiding (filter, null)
 
 -- data type
 
@@ -31,9 +31,12 @@ getGame :: Int -> Query GameRepo Game
 getGame id = do GameRepo dir <- ask
                 return $ dir!id
 
-getUserGame :: User -> Query GameRepo Game
+getUserGame :: User -> Query GameRepo (Maybe Game)
 getUserGame u = do GameRepo dir <- ask
-                   return . snd . findMax . filter (checkUser u) $ dir
+                   let dir' = filter (checkUser u) $ dir
+                   if (null dir')
+                     then return Nothing
+                     else return . Just . snd . findMax $ dir'
 
 
 -- the automagic

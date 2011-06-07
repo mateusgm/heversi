@@ -3,6 +3,7 @@
              TemplateHaskell, TypeFamilies #-}
 module Models.Repo.Types
    (module Data.Data,
+    module Data.Maybe,
     module Data.Map,
     module Happstack.State,
     module Control.Monad.Reader,
@@ -15,8 +16,9 @@ module Models.Repo.Types
 import Models.Game
 import Models.User
 
+import Data.Maybe             (Maybe(..), isJust, fromJust)
 import Data.Data              (Data, Typeable)
-import Data.Map               (Map, size, insert, (!), empty,
+import Data.Map               (Map, size, insert, (!), empty, null,
                                toList, update, member, filter, findMax)
 import Happstack.State        (Component(..), End, Version, Query,
                                Update, deriveSerialize, mkMethods)
