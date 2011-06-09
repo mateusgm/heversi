@@ -1,7 +1,12 @@
-all: clean build install run 
+all: clean config build install run 
 
 run:
-	reverskell +RTS -A4M -N4 -qg0 -qb -g1 &
+	reverskell +RTS -A256M -N4 -qg0 -qb0 &
+
+# -N: number of threads
+# -A: GC allocation area size
+# -qbX: enables load balancing for GC generation X or disable it at all (no X)
+# -qgX: use parallel GC in generation X or disable it at all (no X)
 
 stop:
 	kill `pidof reverskell`
